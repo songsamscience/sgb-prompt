@@ -352,7 +352,7 @@ footer.site{border-top:1px solid var(--line);background:#fff;margin-top:10px;}
     <section class="resbar">
       <div class="res-head">
         <span class="res-title">📥 공식 자료실</span>
-        <span class="res-desc">에이전트·Gem·프로젝트의 '지식'에 교과 성취기준 요약 자료나 원본을 첨부하면 초안이 더 정확해집니다 — 원본은 여기서 내려받으세요</span>
+        <span class="res-desc">사용하려는 AI의 에이전트·Gem·프로젝트 등의 '지식'에 교과 성취기준이 요약된 자료를 넣거나 원본을 첨부하면 더 정확해집니다 — 원본은 여기서 내려받으세요</span>
       </div>
       <div class="res-links">
         <a class="reslink" href="https://ncic.re.kr/inv/org/list.do" target="_blank" rel="noopener">
@@ -938,7 +938,7 @@ function renderManual(){
   const botName = "생기부 AI"+(subjN?("("+subjN+")"):clubN?("("+clubN+")"):"("+state.level.replace("학교","")+" "+gradeText()+")");
   document.getElementById("manualBody").innerHTML =
     '<p class="mneed" style="background:#eaf4fc;border-color:#cfe4f5;color:var(--blue-deep);">🤖 이 매뉴얼대로 만들면, 위 프롬프트가 상시 적용되어 <b>누가기록만 붙여넣으면 세특 초안을 만들어 주는 나만의 생기부 AI</b>가 완성됩니다. 위 <b>‘에이전트 설정 문구’</b>의 ①제목 ②설명 ③지침을 각 입력칸에 순서대로 붙여넣으세요. 추천 이름: <b>'+botName+'</b></p>'
-    + '<p class="mneed">필요 조건 · <b>'+p.need+'</b></p><ol class="steps">'+steps+'</ol><p class="mnote">※ '+p.note+' · 지침에는 생성된 프롬프트를, 지식/파일에는 생활기록부 참고 자료를 넣는 흐름은 모든 플랫폼이 동일합니다. <b>에이전트·Gem·프로젝트의 ‘지식’에 교과 성취기준을 요약한 자료를 넣거나 원본 파일(성취기준·기재요령)을 첨부하면 초안의 정확도가 크게 높아집니다.</b> 원본 자료는 페이지 상단 <b>‘공식 자료실’</b> 버튼에서 내려받을 수 있습니다. 완성된 생기부 AI의 답변 역시 초안이므로 교사 검토 후 입력하세요.</p>';
+    + '<p class="mneed">필요 조건 · <b>'+p.need+'</b></p><ol class="steps">'+steps+'</ol><p class="mnote">※ '+p.note+' · 지침에는 생성된 프롬프트를, 지식/파일에는 생활기록부 참고 자료를 넣는 흐름은 모든 플랫폼이 동일합니다. <b>사용하려는 AI의 에이전트·Gem·프로젝트 등의 ‘지식’에 교과 성취기준이 요약된 자료를 넣거나 원본 파일(성취기준·기재요령)을 첨부하면 초안이 더 정확해집니다.</b> 원본 자료는 페이지 상단 <b>‘공식 자료실’</b> 버튼에서 내려받을 수 있습니다. 완성된 생기부 AI의 답변 역시 초안이므로 교사 검토 후 입력하세요.</p>';
 }
 
 /* ---- 생성 ---- */
