@@ -475,6 +475,23 @@ footer.site{border-top:1px solid var(--line);background:#fff;margin-top:10px;}
   .warnmsg{text-align:center;}
 }
 @media(max-width:440px){.cats{grid-template-columns:1fr;}}
+/* 입력 보관·결과 상태·키보드 접근 */
+[hidden]{display:none!important;}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;}
+.mini:disabled{opacity:.45;cursor:not-allowed;}
+.settingsbar{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:18px 0;padding:16px 18px;background:#fff;border:1px solid var(--line);border-radius:14px;}
+.settingsbar .summary{flex:1;min-width:180px;font-size:12px;color:var(--muted);}
+.settingsbar .summary b{display:block;font-size:14px;color:var(--blue-deep);}
+.settingsbar .helper{flex-basis:100%;margin:0;}
+#saveStatus{display:block;font-size:12px;color:var(--muted);}
+#saveStatus.error{color:var(--danger);}
+.result-status{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin:14px 0;padding:13px 16px;border-radius:12px;border:1px solid #cfe4f5;background:#eaf4fc;color:var(--blue-deep);font-size:13px;}
+.result-status.stale{background:#fff8ee;border-color:#f2ddba;color:#89560d;}
+.seltag button{border:0;background:transparent;color:var(--blue-deep);font:inherit;cursor:pointer;padding:3px 6px;}
+.lcrow .nm,.manual{overflow-wrap:anywhere;}
+.lcrow>*{min-width:0;}
+@media(max-width:720px){.settingsbar .summary{flex-basis:100%;}.step-head{flex-wrap:wrap;}.step-head .hint{flex-basis:100%;margin-left:43px;}.stdsearch{flex-wrap:wrap;}.stdsearch>*{min-width:0;}.limitrow select{min-width:0;max-width:100%;}}
+@media print{.settingsbar,.result-status,#saveStatus,#undoBtn{display:none!important;}}
 </style>
 </head>
 <body>
@@ -524,6 +541,16 @@ footer.site{border-top:1px solid var(--line);background:#fff;margin-top:10px;}
           <span class="res-arrow">↗</span>
         </a>
       </div>
+    </section>
+
+    <section class="settingsbar" aria-label="입력 설정 보관">
+      <div class="summary"><b>내 설정 보관함</b>선택한 항목과 성취기준을 파일로 보관하고 다시 불러오세요.</div>
+      <button class="mini" id="exportSettingsBtn" type="button">↓ 설정 백업</button>
+      <button class="mini" id="importSettingsBtn" type="button">↑ 설정 불러오기</button>
+      <input id="settingsFile" type="file" accept=".json,application/json" hidden />
+      <button class="mini" id="undoBtn" type="button" hidden>↶ 입력 되돌리기</button>
+      <p class="helper">백업에는 선생님 성함과 입력 설정이 포함됩니다. 아래 문구 검사기의 내용은 저장하지 않습니다.</p>
+      <span id="saveStatus" role="status" aria-live="polite">입력값은 이 브라우저에 자동 저장됩니다.</span>
     </section>
 
     <!-- STEP 1 -->
@@ -719,12 +746,15 @@ footer.site{border-top:1px solid var(--line);background:#fff;margin-top:10px;}
         프롬프트 만들기
       </button>
       <button class="btn btn-ghost" id="resetBtn" type="button">↺ 입력 초기화</button>
-      <span style="font-size:11.5px;color:var(--faint);font-weight:600;">입력값은 이 브라우저에 자동 저장됩니다</span>
-      <span class="warnmsg" id="warn"></span>
+      <span class="warnmsg" id="warn" role="alert"></span>
     </div>
 
     <!-- OUTPUT -->
-    <section id="output">
+    <section id="output" tabindex="-1" aria-label="생성 결과">
+      <div class="result-status" id="resultStatus">
+        <span id="resultStatusText" role="status" aria-live="polite"></span>
+        <button class="mini" id="regenerateBtn" type="button" hidden>현재 설정으로 다시 만들기</button>
+      </div>
       <span class="result-tag"><span class="dot"></span>선생님 맞춤 결과</span>
 
       <div class="obox">
@@ -2194,18 +2224,18 @@ function renderManual(){
   const steps = p.steps.map(s=>"<li>"+s.replace(/<chip>/g,'<span class="chip">').replace(/<\/chip>/g,'</span>')+"</li>").join("");
   const botName = "생기부 AI("+agentTag()+")";
   document.getElementById("manualBody").innerHTML =
-    '<p class="mneed" style="background:#eaf4fc;border-color:#cfe4f5;color:var(--blue-deep);">🤖 이 매뉴얼대로 만들면, 위 프롬프트가 상시 적용되어 <b>누가기록만 붙여넣으면 세특 초안을 만들어 주는 나만의 생기부 AI</b>가 완성됩니다. 위 <b>‘에이전트 설정 문구’</b>의 ①제목 ②설명 ③지침을 각 입력칸에 순서대로 붙여넣으세요. 추천 이름: <b>'+botName+'</b></p>'
+    '<p class="mneed" style="background:#eaf4fc;border-color:#cfe4f5;color:var(--blue-deep);">🤖 이 매뉴얼대로 만들면, 위 프롬프트가 상시 적용되어 <b>누가기록만 붙여넣으면 세특 초안을 만들어 주는 나만의 생기부 AI</b>가 완성됩니다. 위 <b>‘에이전트 설정 문구’</b>의 ①제목 ②설명 ③지침을 각 입력칸에 순서대로 붙여넣으세요. 추천 이름: <b>'+escapeHtml(botName)+'</b></p>'
     + '<p class="mneed">필요 조건 · <b>'+p.need+'</b></p><ol class="steps">'+steps+'</ol><p class="mnote">※ '+p.note+' · 지침에는 생성된 프롬프트를, 지식/파일에는 생활기록부 참고 자료를 넣는 흐름은 모든 플랫폼이 동일합니다. <b>사용하려는 AI의 에이전트·Gem·프로젝트 등의 ‘지식’에 교과 성취기준이 요약된 자료를 넣거나 원본 파일(성취기준·기재요령)을 첨부하면 초안이 더 정확해집니다.</b> 원본 자료는 페이지 상단 <b>‘공식 자료실’</b> 버튼에서 내려받을 수 있습니다. 완성된 생기부 AI의 답변 역시 초안이므로 교사 검토 후 입력하세요.</p>';
 }
 
 /* ---- 생성 ---- */
 let currentPrompt = "";
-function generate(){
+function generate(scroll = true){
   const warn = document.getElementById("warn");
-  if(state.grades.size===0){ return showWarn("학년을 하나 이상 선택하세요."); }
-  if(state.cats.size===0){ return showWarn("작성할 항목을 하나 이상 선택하세요."); }
-  if(state.cats.has("과세특타") && !document.getElementById("subject").value.trim()){ return showWarn("타교과 과세특을 선택하셨습니다. 과목명을 입력하세요."); }
-  if(state.cats.has("동아리") && !document.getElementById("clubName").value.trim()){ return showWarn("동아리활동을 선택하셨습니다. 동아리명을 입력하세요."); }
+  if(state.grades.size===0){ return showWarn("학년을 하나 이상 선택하세요.", "gradeChips"); }
+  if(state.cats.size===0){ return showWarn("작성할 항목을 하나 이상 선택하세요.", "cats"); }
+  if(state.cats.has("과세특타") && !document.getElementById("subject").value.trim()){ return showWarn("타교과 과세특을 선택하셨습니다. 과목명을 입력하세요.", "subject"); }
+  if(state.cats.has("동아리") && !document.getElementById("clubName").value.trim()){ return showWarn("동아리활동을 선택하셨습니다. 동아리명을 입력하세요.", "clubName"); }
   warn.classList.remove("show");
 
   currentPrompt = buildPrompt();
@@ -2218,9 +2248,21 @@ function generate(){
   document.getElementById("tmplText").textContent = currentTemplate;
   renderManual();
   document.getElementById("output").style.display = "block";
-  document.getElementById("output").scrollIntoView({behavior:"smooth", block:"start"});
+  generatedSettings = JSON.stringify(collectSettings());
+  updateResultStatus();
+  if(scroll){
+    document.getElementById("output").focus({preventScroll:true});
+    document.getElementById("output").scrollIntoView({behavior:"smooth", block:"start"});
+  }
+  return true;
 }
-function showWarn(m){ const w=document.getElementById("warn"); w.textContent="⚠ "+m; w.classList.add("show"); }
+function showWarn(m, id){
+  const w=document.getElementById("warn"); w.textContent="⚠ "+m; w.classList.add("show");
+  const box=id && document.getElementById(id);
+  const target=box && (box.matches("input,textarea") ? box : box.querySelector("button,[tabindex]"));
+  if(target) target.focus();
+  return false;
+}
 
 /* ---- 프롬프트 길이 안내 ---- */
 function showAdvice(len){
@@ -2251,33 +2293,17 @@ function syncSeg(id, val){
 
 /* ---- 초기화 ---- */
 function resetAll(){
-  ["teacher","subject","clubName","clubFeat","autoRole","careerWish","freeProg"].forEach(id=>{
-    const e=document.getElementById(id); if(e) e.value="";
-  });
-  state.cats.clear(); state.stds.clear(); state.subjStds.clear();
-  state.subjKey=""; state.subjCourse="";
-  state.terms.clear(); state.autoActs.clear(); state.careerActs.clear(); state.freeAreas.clear();
-  state.opt = {count:"auto", len:"std", lenCustom:{}, tone:"balance", mode:"full",
-               code:true, chars:true, evidence:true, ask:true,
-               example:true, batch:false, anon:true, selfcheck:true};
-  state.grades=new Set(["1학년"]);
-  document.querySelectorAll("#gradeChips button").forEach(b=>b.classList.toggle("on", b.dataset.v==="1학년"));
-  document.getElementById("optCount").value=state.opt.count;
-  document.getElementById("optLen").value=state.opt.len;
-  renderLenCustom();
-  syncSeg("segTone", state.opt.tone); syncSeg("segMode", state.opt.mode);
-  renderOptToggles(); renderCats(); renderAllChipGroups(); syncSubjBox(); refreshPickers();
-  document.getElementById("warn").classList.remove("show");
-  document.getElementById("output").style.display="none";
-  document.getElementById("agentTitle").value="";
-  document.getElementById("agentDesc").value="";
-  currentPrompt=""; currentTemplate="";
+  undoSettings = collectSettings();
+  applySettings(DEFAULT_SETTINGS);
+  clearResult();
   saveState();
-  window.scrollTo({top:0, behavior:"smooth"});
+  document.getElementById("undoBtn").hidden=false;
+  document.getElementById("undoBtn").focus();
 }
 
 /* ---- 복사 / TXT ---- */
 function copyPrompt(){
+  if(!ensureCurrentResult()) return;
   const btn = document.getElementById("copyBtn");
   const done = ()=>{ btn.textContent="✓ 복사됨"; btn.classList.add("copied"); setTimeout(()=>{btn.textContent="📋 복사";btn.classList.remove("copied");},1600); };
   if(navigator.clipboard && navigator.clipboard.writeText){
@@ -2285,10 +2311,15 @@ function copyPrompt(){
   } else fallbackCopy(currentPrompt,done);
 }
 function fallbackCopy(text,cb){
+  const active=document.activeElement;
   const ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.left="-9999px";
   document.body.appendChild(ta); ta.select();
-  try{document.execCommand("copy");cb();}catch(e){alert("복사에 실패했습니다. 텍스트를 직접 선택해 복사하세요.");}
-  document.body.removeChild(ta);
+  let copied=false;
+  try{ copied=document.execCommand("copy"); }catch(e){}
+  ta.remove();
+  if(active && active.focus) active.focus({preventScroll:true});
+  if(copied) cb();
+  else alert("복사에 실패했습니다. 텍스트를 직접 선택해 복사하세요.");
 }
 function fnameStub(){
   const lv=state.level, grade=gradeText();
@@ -2296,12 +2327,17 @@ function fnameStub(){
   if(state.cats.has("과세특과학")) extra="_"+sciCourseObj().name;
   else if(state.cats.has("과세특타")) extra="_"+document.getElementById("subject").value.trim();
   else if(state.cats.has("동아리")) extra="_"+document.getElementById("clubName").value.trim();
-  return ("송쌤과학_생기부_"+lv+grade+extra).replace(/\s+/g,"");
+  return ("송쌤과학_생기부_"+lv+grade+extra).replace(/[<>:"/\\|?*\x00-\x1f]/g,"_").replace(/\s+/g,"").slice(0,100);
+}
+function downloadFile(contents, name, type){
+  const url=URL.createObjectURL(new Blob([contents],{type}));
+  const a=document.createElement("a"); a.href=url; a.download=name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 function downloadTxt(){
-  const blob=new Blob([currentPrompt],{type:"text/plain;charset=utf-8"});
-  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
-  a.download=fnameStub()+"_프롬프트.txt"; a.click(); URL.revokeObjectURL(a.href);
+  if(!ensureCurrentResult()) return;
+  downloadFile(currentPrompt,fnameStub()+"_프롬프트.txt","text/plain;charset=utf-8");
 }
 
 /* ---- PDF ---- */
@@ -2378,12 +2414,14 @@ function buildPdfDoc(){
 }
 
 async function savePdf(){
+  if(!ensureCurrentResult()) return;
+  const pdfFilename=fnameStub()+".pdf";
   const btn=document.getElementById("pdfBtn");
   if(!(window.html2canvas && window.jspdf)){
     alert("PDF 라이브러리를 불러오지 못했습니다(오프라인 등). 브라우저 인쇄(Ctrl/⌘+P) → ‘PDF로 저장’을 이용하세요.");
     window.print(); return;
   }
-  const old=btn.innerHTML; btn.disabled=true; btn.innerHTML="⏳ PDF 만드는 중…";
+  const old=btn.innerHTML; pdfBusy=true; btn.disabled=true; btn.innerHTML="⏳ PDF 만드는 중…";
   try{
     buildPdfDoc();
     const el=document.getElementById("pdfDoc").firstChild;
@@ -2398,12 +2436,12 @@ async function savePdf(){
     pdf.addImage(img,"JPEG",m,pos,iw,ih);
     left-=(ph-m*2);
     while(left>0){ pos=left-ih+m; pdf.addPage(); pdf.addImage(img,"JPEG",m,pos,iw,ih); left-=(ph-m*2); }
-    pdf.save(fnameStub()+".pdf");
+    pdf.save(pdfFilename);
   }catch(e){
     console.error(e);
     alert("PDF 생성 중 문제가 발생했습니다. 브라우저 인쇄(Ctrl/⌘+P) → ‘PDF로 저장’을 이용해 주세요.");
     window.print();
-  }finally{ btn.disabled=false; btn.innerHTML=old; }
+  }finally{ pdfBusy=false; btn.innerHTML=old; updateResultStatus(); }
 }
 
 /* =========================================================
@@ -2556,10 +2594,10 @@ function renderLenCustom(){
         const setB = state.opt.lenCustom[r.key];
         const ph = lenBytesFor(r.cat, r.sub ? "" : null);   // 상속되는 기본값을 placeholder 로
         return '<div class="lcrow'+(r.sub?" sub":"")+'">'
-          + '<span class="nm">'+(r.sub?'<span class="ar">└</span> ':'')+r.label+'</span>'
-          + '<input type="number" min="50" max="'+cap+'" step="10" data-key="'+r.key+'" data-u="c" '
+          + '<span class="nm">'+(r.sub?'<span class="ar">└</span> ':'')+escapeHtml(r.label)+'</span>'
+          + '<input type="number" min="50" max="'+cap+'" step="10" data-key="'+escapeHtml(r.key)+'" data-u="c" '
           +   'placeholder="'+Math.round(ph/BPC)+'" value="'+(setB?Math.round(setB/BPC):"")+'" /><span class="un2">자</span>'
-          + '<input type="number" min="150" max="'+capB+'" step="30" data-key="'+r.key+'" data-u="b" '
+          + '<input type="number" min="150" max="'+capB+'" step="30" data-key="'+escapeHtml(r.key)+'" data-u="b" '
           +   'placeholder="'+ph+'" value="'+(setB||"")+'" /><span class="un2">Byte</span>'
           + '<span class="cap">상한 <b>'+cap.toLocaleString()+'자</b> / '+capB.toLocaleString()+'Byte</span></div>';
       }).join("")
@@ -2570,7 +2608,8 @@ function renderLenCustom(){
     const key=inp.dataset.key, unit=inp.dataset.u;
     const row=rows.find(r=>r.key===key), cap=lenCap(row.cat), capB=capBytes(row.cat);
     const sync=(bytes)=>{
-      box.querySelectorAll('input[data-key="'+key+'"]').forEach(o=>{
+      box.querySelectorAll("input[data-key]").forEach(o=>{
+        if(o.dataset.key!==key) return;
         if(o===inp) return;
         o.value = bytes==null ? "" : (o.dataset.u==="c" ? Math.round(bytes/BPC) : bytes);
       });
@@ -2652,9 +2691,9 @@ function renderStdSel(k){
   const cnt = document.getElementById(PK_IDS[k].cnt);
   if(cnt) cnt.textContent = sel.length;
   box.innerHTML = sel.length
-    ? sel.map(x=>'<span class="seltag" title="'+x.text.replace(/"/g,"&quot;")+'">'+x.code+'<i data-code="'+x.code+'">×</i></span>').join("")
+    ? sel.map(x=>'<span class="seltag" title="'+x.text.replace(/"/g,"&quot;")+'">'+x.code+'<button type="button" data-code="'+x.code+'" aria-label="'+x.code+' 선택 해제">×</button></span>').join("")
     : '<span class="none">아직 선택한 성취기준이 없습니다. 선택하지 않아도 프롬프트는 만들어집니다.</span>';
-  box.querySelectorAll("i[data-code]").forEach(i=>{
+  box.querySelectorAll("button[data-code]").forEach(i=>{
     i.addEventListener("click",()=>{ pkStds(k).delete(i.dataset.code); renderStdList(k); renderStdSel(k); saveState(); });
   });
 }
@@ -2729,7 +2768,7 @@ function chipGroup(box, groups, set, sumEl, sumEmpty){
   box.innerHTML = "";
   const render = ()=>{
     if(!sumEl) return;
-    sumEl.innerHTML = set.size ? ("선택 "+set.size+"개 · "+[...set].join(" · ")) : ('<span>'+sumEmpty+'</span>');
+    sumEl.innerHTML = set.size ? ("선택 "+set.size+"개 · "+[...set].map(escapeHtml).join(" · ")) : ('<span>'+sumEmpty+'</span>');
   };
   Object.entries(groups).forEach(([g, items])=>{
     const wrap=document.createElement("div"); wrap.className="tgrp";
@@ -2774,49 +2813,190 @@ function syncConds(){
    입력 자동 저장 (브라우저 로컬)
    ========================================================= */
 const LS_KEY = "songsam_sgb_v3";
-let saveTimer = null;
+const INPUT_IDS = ["teacher","subject","clubName","clubFeat","autoRole","careerWish","freeProg"];
+const SET_KEYS = ["grades","cats","stds","subjStds","terms","autoActs","careerActs","freeAreas"];
 const V = id => { const e=document.getElementById(id); return e ? e.value : ""; };
-function saveState(){
+let saveTimer=null, generatedSettings=null, undoSettings=null, pendingSave=false, pdfBusy=false;
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function collectSettings(){
+  const data={...state,opt:JSON.parse(JSON.stringify(state.opt))};
+  SET_KEYS.forEach(key=>data[key]=[...state[key]].sort());
+  INPUT_IDS.forEach(id=>data[id]=V(id));
+  return data;
+}
+const DEFAULT_SETTINGS=collectSettings();
+function setSaveStatus(message, error=false){
+  const el=document.getElementById("saveStatus");
+  el.textContent=message; el.classList.toggle("error",error);
+}
+function persistState(){
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(()=>{
-    try{
-      localStorage.setItem(LS_KEY, JSON.stringify({
-        level:state.level, grades:[...state.grades], cats:[...state.cats], platform:state.platform,
-        sciCourse:state.sciCourse, stds:[...state.stds],
-        subjKey:state.subjKey, subjCourse:state.subjCourse, subjStds:[...state.subjStds],
-        terms:[...state.terms], autoActs:[...state.autoActs],
-        careerActs:[...state.careerActs], freeAreas:[...state.freeAreas],
-        opt:state.opt,
-        teacher:V("teacher"), subject:V("subject"), clubName:V("clubName"), clubFeat:V("clubFeat"),
-        autoRole:V("autoRole"), careerWish:V("careerWish"), freeProg:V("freeProg")
-      }));
-    }catch(e){}
-  }, 300);
+  if(!pendingSave) return;
+  try{
+    localStorage.setItem(LS_KEY,JSON.stringify(collectSettings())); pendingSave=false;
+    setSaveStatus("✓ 자동 저장됨 · "+new Date().toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"}));
+  }catch(e){ setSaveStatus("자동 저장을 사용할 수 없습니다. ‘설정 백업’으로 파일을 보관하세요.",true); }
+}
+function saveState(){
+  pendingSave=true;
+  updateResultStatus(); syncAccessibleState();
+  setSaveStatus("변경사항 저장 중…");
+  clearTimeout(saveTimer); saveTimer=setTimeout(persistState,300);
+}
+function normalizeSettings(raw){
+  const obj=x=>x!==null && typeof x==="object" && !Array.isArray(x);
+  if(!obj(raw) || !Object.hasOwn(raw,"level") || !Object.hasOwn(raw,"cats")) throw new Error("설정 형식");
+  const d=JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+  const choose=(key,values)=>{
+    if(raw[key]===undefined) return;
+    if(!values.includes(raw[key])) throw new Error(key);
+    d[key]=raw[key];
+  };
+  choose("level",["중학교","고등학교"]);
+  choose("platform",Object.keys(PLATFORMS));
+  choose("subjKey",["",...SUBJ_DB_KEYS]);
+  const allowed={grades:["1학년","2학년","3학년"],cats:CAT_ORDER,
+    terms:Object.values(HABIT_TERMS).flat(),autoActs:Object.values(AUTO_ACTS).flat(),
+    careerActs:Object.values(CAREER_ACTS).flat(),freeAreas:FREE_AREAS};
+  Object.entries(allowed).forEach(([key,values])=>{
+    if(raw[key]===undefined) return;
+    if(!Array.isArray(raw[key]) || raw[key].some(x=>!values.includes(x))) throw new Error(key);
+    d[key]=[...new Set(raw[key])];
+  });
+  const level=d.level==="중학교" ? "중" : "고";
+  [["sciCourse","stds","과학"],["subjCourse","subjStds",d.subjKey]].forEach(([key,sel,subject])=>{
+    const courses=(STD_DB[subject]||[]).filter(c=>c.lv===level);
+    const course=courses.find(c=>c.id===raw[key]) || courses[0];
+    d[key]=course ? course.id : "";
+    const codes=course ? course.u.flatMap(u=>u.s.map(x=>x[0])) : [];
+    if(raw[sel]!==undefined && (!Array.isArray(raw[sel]) || raw[sel].some(x=>typeof x!=="string"))) throw new Error(sel);
+    d[sel]=[...new Set((raw[sel]||[]).filter(x=>codes.includes(x)))];
+  });
+  if(level==="고") d.cats=d.cats.filter(x=>x!=="자유학기");
+  INPUT_IDS.forEach(id=>{
+    if(raw[id]===undefined) return;
+    if(typeof raw[id]!=="string" || raw[id].length>20000) throw new Error(id);
+    d[id]=raw[id];
+  });
+  if(raw.opt!==undefined){
+    if(!obj(raw.opt)) throw new Error("옵션");
+    const enums={count:["auto","2","3","5","7"],len:["short","std","rich","max","custom"],tone:["plain","balance","rich"],mode:["full","compact"]};
+    Object.keys(d.opt).filter(k=>k!=="lenCustom").forEach(k=>{
+      if(raw.opt[k]===undefined) return;
+      if(enums[k] ? !enums[k].includes(raw.opt[k]) : typeof raw.opt[k]!=="boolean") throw new Error(k);
+      d.opt[k]=raw.opt[k];
+    });
+    if(raw.opt.lenCustom!==undefined){
+      if(!obj(raw.opt.lenCustom)) throw new Error("분량");
+      Object.entries(raw.opt.lenCustom).forEach(([key,value])=>{
+        const cat=key.split("::")[0];
+        if(!CAT_ORDER.includes(cat) || key.length>20000 || !Number.isFinite(value) || value<=0) throw new Error("분량");
+        d.opt.lenCustom[key]=Math.max(150,Math.min(capBytes(cat),Math.round(value)));
+      });
+    }
+  }
+  return d;
+}
+function assignSettings(d){
+  Object.keys(DEFAULT_SETTINGS).filter(k=>!INPUT_IDS.includes(k)).forEach(k=>{
+    state[k]=SET_KEYS.includes(k) ? new Set(d[k]) : (k==="opt" ? JSON.parse(JSON.stringify(d[k])) : d[k]);
+  });
+  INPUT_IDS.forEach(id=>document.getElementById(id).value=d[id]);
+}
+function applySettings(d){
+  assignSettings(d);
+  ["stdQ","stdQ2"].forEach(id=>document.getElementById(id).value="");
+  syncSeg("segLevel",state.level); syncSeg("segTone",state.opt.tone); syncSeg("segMode",state.opt.mode);
+  document.querySelectorAll("#gradeChips button").forEach(b=>b.classList.toggle("on",state.grades.has(b.dataset.v)));
+  document.querySelectorAll("#plats .plat").forEach(b=>b.classList.toggle("on",b.dataset.key===state.platform));
+  document.getElementById("optCount").value=state.opt.count;
+  document.getElementById("optLen").value=state.opt.len;
+  renderCats(); renderAllChipGroups(); renderOptToggles(); refreshPickers(); syncSubjBox(); syncConds();
+  syncAccessibleState();
 }
 function loadState(){
-  let d=null;
-  try{ d = JSON.parse(localStorage.getItem(LS_KEY)||"null"); }catch(e){}
-  if(!d) return false;
-  const S=(id,v)=>{ const e=document.getElementById(id); if(e) e.value=v||""; };
   try{
-    if(d.level) state.level=d.level;
-    if(Array.isArray(d.grades)&&d.grades.length) state.grades=new Set(d.grades);
-    if(Array.isArray(d.cats)) state.cats=new Set(d.cats.filter(c=>CAT_ORDER.includes(c)));
-    if(d.platform&&PLATFORMS[d.platform]) state.platform=d.platform;
-    if(d.sciCourse&&STD_DB["과학"].some(c=>c.id===d.sciCourse)) state.sciCourse=d.sciCourse;
-    if(Array.isArray(d.stds)) state.stds=new Set(d.stds);
-    if(d.subjKey&&STD_DB[d.subjKey]) state.subjKey=d.subjKey;
-    if(d.subjCourse) state.subjCourse=d.subjCourse;
-    if(Array.isArray(d.subjStds)) state.subjStds=new Set(d.subjStds);
-    if(Array.isArray(d.terms)) state.terms=new Set(d.terms);
-    if(Array.isArray(d.autoActs)) state.autoActs=new Set(d.autoActs);
-    if(Array.isArray(d.careerActs)) state.careerActs=new Set(d.careerActs);
-    if(Array.isArray(d.freeAreas)) state.freeAreas=new Set(d.freeAreas);
-    if(d.opt && typeof d.opt==="object") Object.keys(state.opt).forEach(k=>{ if(k in d.opt) state.opt[k]=d.opt[k]; });
-    S("teacher",d.teacher); S("subject",d.subject); S("clubName",d.clubName); S("clubFeat",d.clubFeat);
-    S("autoRole",d.autoRole); S("careerWish",d.careerWish); S("freeProg",d.freeProg);
-    return true;
-  }catch(e){ return false; }
+    const text=localStorage.getItem(LS_KEY);
+    if(!text) return;
+    assignSettings(normalizeSettings(JSON.parse(text)));
+    setSaveStatus("✓ 지난 입력 설정을 불러왔습니다.");
+  }catch(e){ setSaveStatus("저장된 설정을 읽지 못했습니다. 기본 설정으로 시작합니다.",true); }
+}
+function updateResultStatus(){
+  if(!generatedSettings) return;
+  const stale=generatedSettings!==JSON.stringify(collectSettings());
+  document.getElementById("resultStatus").classList.toggle("stale",stale);
+  document.getElementById("resultStatusText").textContent=stale
+    ? "설정이 변경되었습니다. 다시 만들면 복사·저장을 사용할 수 있습니다."
+    : "✓ 현재 설정이 반영된 결과입니다.";
+  document.getElementById("regenerateBtn").hidden=!stale;
+  document.querySelectorAll("#copyBtn,#txtBtn,#pdfBtn,#tmplCopyBtn,.amcopy").forEach(b=>{
+    b.disabled=stale || (b.id==="pdfBtn" && pdfBusy);
+  });
+}
+function ensureCurrentResult(){
+  updateResultStatus();
+  return !!currentPrompt && generatedSettings===JSON.stringify(collectSettings());
+}
+function clearResult(){
+  generatedSettings=null; currentPrompt=""; currentTemplate="";
+  document.getElementById("output").style.display="none";
+  ["promptText","tmplText","manualBody","pdfDoc"].forEach(id=>document.getElementById(id).replaceChildren());
+  ["agentTitle","agentDesc"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("warn").classList.remove("show");
+}
+function initSettingsTools(){
+  document.getElementById("regenerateBtn").addEventListener("click",()=>generate());
+  document.getElementById("exportSettingsBtn").addEventListener("click",()=>{
+    const backup={app:"songsam-sgb-settings",version:1,exportedAt:new Date().toISOString(),settings:collectSettings()};
+    downloadFile(JSON.stringify(backup,null,2),fnameStub()+"_설정.json","application/json;charset=utf-8");
+  });
+  const file=document.getElementById("settingsFile");
+  document.getElementById("importSettingsBtn").addEventListener("click",()=>file.click());
+  file.addEventListener("change",async()=>{
+    const selected=file.files[0]; if(!selected) return;
+    try{
+      if(selected.size>1024*1024) throw new Error("파일 크기");
+      const backup=JSON.parse(await selected.text());
+      if(backup.app!=="songsam-sgb-settings" || backup.version!==1) throw new Error("백업 버전");
+      const data=normalizeSettings(backup.settings);
+      undoSettings=collectSettings(); applySettings(data); clearResult(); saveState();
+      document.getElementById("undoBtn").hidden=false;
+      document.getElementById("undoBtn").focus();
+    }catch(e){ alert("설정을 불러오지 못했습니다. 이 사이트에서 백업한 1MB 이하 JSON 파일인지 확인하세요. 기존 입력은 유지됩니다."); }
+    finally{ file.value=""; }
+  });
+  document.getElementById("undoBtn").addEventListener("click",()=>{
+    if(!undoSettings) return;
+    applySettings(undoSettings); undoSettings=null; clearResult(); saveState();
+    document.getElementById("undoBtn").hidden=true;
+    document.getElementById("genBtn").focus();
+  });
+  window.addEventListener("pagehide",persistState);
+  document.addEventListener("visibilitychange",()=>{ if(document.hidden) persistState(); });
+}
+function syncAccessibleState(){
+  document.querySelectorAll(".cat,.plat,.stditem").forEach(el=>{
+    el.setAttribute("role",el.classList.contains("stditem") ? "checkbox" : "button");
+    el.tabIndex=0;
+    el.setAttribute(el.classList.contains("stditem") ? "aria-checked" : "aria-pressed",String(el.classList.contains("on")));
+  });
+  document.querySelectorAll("#gradeChips button,.tchips button,#optToggles button,.crschips button,#subjPick .db").forEach(el=>{
+    el.setAttribute("aria-pressed",String(el.classList.contains("on")));
+  });
+}
+function initAccessibility(){
+  const names={teacher:"선생님 성함",subject:"타교과 과목명",clubName:"동아리명",clubFeat:"동아리 특징",autoRole:"자치활동 임원 정보",careerWish:"희망분야 표기 방식",freeProg:"자유학기 프로그램명",stdQ:"과학 성취기준 검색",stdQ2:"타교과 성취기준 검색",stdUnit:"과학 단원 필터",stdUnit2:"타교과 단원 필터",optCount:"문구 개수",optLen:"분량 목표",agentTitle:"에이전트 제목",agentDesc:"에이전트 설명",checkText:"검사할 생활기록부 문구",limitSel:"바이트 한도 기준 항목"};
+  Object.entries(names).forEach(([id,name])=>document.getElementById(id).setAttribute("aria-label",name));
+  document.addEventListener("keydown",e=>{
+    if(e.target.matches(".cat,.plat,.stditem") && (e.key==="Enter" || e.key===" ")){
+      e.preventDefault(); e.target.click();
+    }
+  });
+  new MutationObserver(syncAccessibleState).observe(document.querySelector("main"),{childList:true,subtree:true});
+  syncAccessibleState();
 }
 
 /* ---- 바이트 검사기 ---- */
@@ -2928,6 +3108,7 @@ function renderAllChipGroups(){
 }
 function init(){
   loadState();
+  initSettingsTools();
   // 학교급
   document.querySelectorAll("#segLevel button").forEach(b=>{
     b.setAttribute("aria-pressed", b.dataset.v===state.level ? "true" : "false");
@@ -2969,9 +3150,6 @@ function init(){
     d.addEventListener("click",()=>{
       document.querySelectorAll("#plats .plat").forEach(x=>x.classList.remove("on"));
       d.classList.add("on"); state.platform=key; saveState();
-      if(document.getElementById("output").style.display==="block"){
-        renderManual(); showAdvice([...currentPrompt].length);
-      }
     });
     platsEl.appendChild(d);
   });
@@ -2980,6 +3158,7 @@ function init(){
   document.getElementById("resetBtn").addEventListener("click",resetAll);
   document.querySelectorAll(".amcopy").forEach(btn=>{
     btn.addEventListener("click",()=>{
+      if(!ensureCurrentResult()) return;
       const src=btn.dataset.src;
       const text = src==="__prompt__" ? currentPrompt : document.getElementById(src).value;
       const done=()=>{ btn.textContent="✓ 복사됨"; btn.classList.add("copied"); setTimeout(()=>{btn.textContent="📋 복사";btn.classList.remove("copied");},1600); };
@@ -2990,6 +3169,7 @@ function init(){
   });
   document.getElementById("copyBtn").addEventListener("click",copyPrompt);
   document.getElementById("tmplCopyBtn").addEventListener("click",()=>{
+    if(!ensureCurrentResult()) return;
     const btn=document.getElementById("tmplCopyBtn");
     const done=()=>{ btn.textContent="✓ 복사됨"; btn.classList.add("copied"); setTimeout(()=>{btn.textContent="📋 복사";btn.classList.remove("copied");},1600); };
     if(navigator.clipboard && navigator.clipboard.writeText){
@@ -3019,6 +3199,7 @@ function init(){
   document.getElementById("checkText").addEventListener("input",updateChecker);
   document.getElementById("limitSel").addEventListener("change",updateChecker);
   updateChecker();
+  initAccessibility();
   // 맨 위로
   const topBtn=document.getElementById("topBtn");
   window.addEventListener("scroll",()=>{ topBtn.classList.toggle("show", window.scrollY>500); },{passive:true});
