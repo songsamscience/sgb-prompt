@@ -1565,15 +1565,18 @@ function lenBytesFor(cat, course){
 function lenFor(cat, course){ return Math.round(lenBytesFor(cat,course)/BPC); }
 function lenLine(cat, course){
   const cap=lenCap(cat), capB=capBytes(cat), b=lenBytesFor(cat,course), t=lenFor(cat,course);
-  const how = state.opt.len==="custom" ? "교사가 지정한 목표 분량은" : "이번 초안의 목표 분량은";
+  const how = state.opt.len==="custom" ? "교사가 지정한 문구 1개당 목표 분량은" : "문구 1개당 목표 분량은";
   const per = (state.opt.len==="custom" && course && (state.opt.lenCustom||{})[lenKey(cat,course)]) ? "('"+course+"' 과목 개별 지정) " : "";
   return "● 분량: NEIS 상한 "+cap.toLocaleString()+"자 = "+capB.toLocaleString()+"Byte("+(UNIT_T[cat]||"학년 단위")+") — "+per+how
     + " " + t + "자(약 " + b.toLocaleString() + "Byte) 내외(±10%)이며, 상한은 어떤 경우에도 넘지 않는다."
-    + " 글자수는 NEIS 기준(한글 1자 3Byte, 영문·숫자·엔터 1자 1Byte)으로 계산한다."
+    + " 글자수는 NEIS 기준(한글 1자 3Byte, 영문·숫자·공백·문장부호·엔터 1자 1Byte)으로 계산한다."
     + " 관찰 자료가 적으면 목표보다 짧게 쓰고, 분량을 채우기 위한 수식어·활동 나열은 하지 않는다.";
 }
 function outLine(cat){
-  return "● 출력: 서로 다른 관점의 문구 "+countFor(cat)+"개를 만든다. (표현만 바꾼 중복 문구는 실패로 간주한다)";
+  const n=countFor(cat), nm=CAT_SHORT[cat]||"특기사항";
+  return "● 출력: 서로 다른 관점의 문구 "+n+"개를 만든다. (표현만 바꾼 중복 문구는 실패로 간주한다)\n"
+    + "● 문구 "+n+"개는 이어 붙이는 조각이 아니라 서로 바꿔 쓸 수 있는 "+n+"개의 완성본이다. 각 문구는 그 자체로 완결된 '"+nm
+    + "' 한 편이어야 하며, 교사는 이 중 하나를 골라 그대로 생활기록부에 입력한다. 따라서 목표 분량은 "+n+"개의 합계가 아니라 문구 1개의 분량이다.";
 }
 function axisLine(cat){
   const N=countFor(cat), ax=(AXES[cat]||AXES.기본);
@@ -1639,6 +1642,16 @@ function askBlock(){
     "  ③ 그 과정에서 드러난 판단·사고  ④ 활동 전후의 변화",
     "확인된 정보만으로 작성이 가능하면 질문 없이 진행하되, 근거가 약한 문장에는 '[확인 필요]'를 붙인다."].join("\n");
 }
+function noAskBlock(){
+  if(state.opt.ask) return "";
+  return ["【진행 원칙 — 되묻지 말고 바로 초안을 낸다】",
+    "· 누가기록이 짧거나 빈 항목이 있어도 교사에게 되묻지 않는다. 주어진 내용만으로 곧바로 초안을 작성한다.",
+    "· 단원·성취기준·활동명·일자가 없으면 없는 대로 쓰고, 그 부분을 질문하지 않는다.",
+    "· 정보가 적을 때는 지어내지 말고 문구를 더 짧게 쓰거나 개수를 줄여서 낸다. 분량을 채우려고 없는 장면을 만들지 않는다.",
+    "· 사실 확인이 필요한 곳은 질문하지 말고 그 자리에 '[확인 필요]'만 표시한다.",
+    "· 인사말·요약·지침 복창·설명 없이 첫 줄부터 문구를 출력한다.",
+    "· 누가기록이 한 줄뿐이어도 최소 1개 문구는 반드시 출력한다. 빈 답변이나 '정보가 부족합니다'만 내놓지 않는다."].join("\n");
+}
 function batchBlock(){
   if(!state.opt.batch) return "";
   return ["【여러 학생 일괄 생성 모드】",
@@ -1661,14 +1674,14 @@ function outputFormatBlock(){
   if(state.opt.evidence) extra.push("근거: (누가기록의 어느 내용에서 나왔는지)");
   extra.forEach((e,i)=>l.push("  "+(i+3)+") 부가 줄   : "+e));
   l.push("★ 문구 줄에는 문구 본문 외에 아무것도 넣지 않는다. 머리표·번호·관점·글자수·Byte·근거·성취기준 코드·따옴표·머리기호를 문구 줄에 섞어 쓰지 않으며, 모두 위아래 별도 줄로 분리한다.");
-  if(state.opt.chars) l.push("· 글자수는 공백 포함 한글 기준으로 세고, Byte는 한글 1자=3Byte·영문/숫자/엔터 1자=1Byte로 계산한다.");
+  if(state.opt.chars) l.push("· 글자수는 공백 포함해 세고, Byte는 한글 1자=3Byte · 영문·숫자·공백·문장부호·엔터 1자=1Byte로 계산한다. (자수×3으로 어림하지 말고 실제로 계산한다)");
   if(state.opt.code) l.push("· 연계 성취기준 코드는 머리표 줄에만 적고, 묶음 끝에 '최종 입력 시 머리표 줄은 제외하고 문구 줄만 옮기세요'를 한 번 안내한다.");
-  l.push("  예)");
+  l.push("  예) — 줄 배치만 보여주는 예시이며, 실제 문구는 위의 목표 분량으로 길게 쓴다.");
   l.push("  과학 과세특 ▶ 1 ▶ [관점: 탐구 설계]" + (state.opt.code?" ▶ [9과03-02]":""));
   l.push("  가설을 세운 뒤 변인을 하나씩 바꾸어 실험을 다시 설계하고, 예상과 다른 결과가 나온 까닭을 자료에서 찾아 설명함.");
-  if(state.opt.chars)    l.push("  (312자 / 936Byte)");
+  if(state.opt.chars)    l.push("  (64자 / 156Byte)");
   if(state.opt.evidence) l.push("  근거: 5월 2차시 탐구 수업 관찰 기록");
-  l.push("· 항목 묶음 끝에 '※ 교사 확인 필요 사항'을 1~3줄로 적는다(사실 확인이 필요한 부분, 빠진 관찰 정보, 상한 대비 여유 분량).");
+  l.push("· 사실과 다를 수 있어 교사가 반드시 확인해야 할 부분이 실제로 있을 때만, 항목 묶음 끝에 '※ 확인:'으로 1줄만 덧붙인다. 확인할 것이 없으면 아무것도 적지 않는다. 빠진 자료를 요청하거나 추가 정보를 요구하는 말은 쓰지 않는다.");
   l.push("· 표·머리기호·굵게 등의 꾸밈 없이, 생활기록부에 그대로 옮길 수 있는 문장 형태로 출력한다.");
   return l.join("\n");
 }
@@ -1678,7 +1691,7 @@ function selfcheckBlock(){
     "1) 금지어 스캔: 대회, 공모전, 올림피아드, 수상, 표창장, 감사장, 자격증, 인증시험, 모의고사, 전국연합학력평가, 내신, 등급, 등수, 1위, 방과후, 소논문, 연구보고서, 논문, 특허, 장학금, MOOC, 어학연수, 해외봉사, 토익·토플·텝스·HSK·JLPT, 학원, 어머니, 아버지, 느낌 — 하나라도 있으면 그 문장을 다시 쓴다.",
     "2) 특정 대학명·기관명·상호명·강사명이 없는가? (교육부·시도교육청·교육지원청 등 교육관련기관명만 예외)",
     "3) 모든 문장이 명사형 어미로 끝나는가? '이 학생은/그는/그녀는' 같은 주어가 없는가?",
-    "4) 각 문구가 항목별 NEIS 상한 이내인가? (한글 1자 = 3Byte)",
+    "4) 각 문구가 항목별 NEIS 상한 이내인가? (한글 1자 3Byte, 영문·숫자·공백·문장부호 1자 1Byte)",
     "5) 누가기록에 없는 내용을 지어내지 않았는가? 근거가 약한 부분을 [확인 필요]로 표시했는가?",
     "6) 평가어마다 근거가 되는 관찰 행동이 함께 있는가? 추상적 칭찬이나 활동 나열만 남은 문장은 없는가?",
     "7) 문구들이 서로 다른 관점으로 작성되었는가? 다른 학생에게도 그대로 쓸 수 있는 범용 문장은 아닌가?",
@@ -2108,13 +2121,14 @@ function buildPrompt(){
     + (state.opt.batch?" · 여러 학생 일괄 생성":"") + (isCompact()?" · 압축 지침":""));
 
   const parts = [headLines.join("\n"), "", commonBlock(), "", qualityBlock(), "", rewriteBlock()];
-  const ask = askBlock(); if(ask) parts.push("", ask);
+  const ask = askBlock() || noAskBlock(); if(ask) parts.push("", ask);
   const batch = batchBlock(); if(batch) parts.push("", batch);
   chosen.forEach(c=>{ const sec = sectionFor(c); if(sec) parts.push("", sec); });
   parts.push("", outputFormatBlock(), "", selfcheckBlock(), "",
     "【사용 방법】",
     "이 지침 아래(또는 다음 메시지)에 학생별 누가기록(관찰한 학습·행동·활동 내용, 성장 사례, 역할, 산출물 요약 등)을 붙여넣으면, 위 지침에 따라 항목별 초안을 생성합니다."
-      + (state.opt.ask ? " 자료가 부족하면 초안을 만들기 전에 어떤 관찰 정보가 더 필요한지 먼저 물어보세요." : ""),
+      + (state.opt.ask ? " 자료가 부족하면 초안을 만들기 전에 어떤 관찰 정보가 더 필요한지 먼저 물어보세요."
+                        : " 양식의 빈칸을 다 채우지 않아도 됩니다. 아는 내용만 적어 붙여넣으면 되묻지 않고 바로 초안을 만듭니다."),
     "생성된 문구는 초안이므로, 교사가 사실 확인과 개별화 수정을 거쳐 최종 입력합니다.");
   return parts.join("\n");
 }
@@ -2224,7 +2238,8 @@ function buildTemplate(){
       "- 어떤 지식·역량을 연결·통합했는지: ",
       "- 과세특·창체와 중복되지 않는지 확인: ","");
   }
-  lines.push("※ 수치·순위, 대회·수상, 교외 기관명 등 기재 불가 정보는 적지 마세요.",
+  lines.push("※ 빈칸은 다 채우지 않아도 됩니다. 아는 것만 적고 나머지 줄은 지운 뒤 붙여넣으면 바로 초안이 나옵니다.",
+    "※ 수치·순위, 대회·수상, 교외 기관명 등 기재 불가 정보는 적지 마세요.",
     "※ 학생 이름은 익명 기호(예: 3반 A학생)로 적고, 개인정보는 입력하지 마세요.",
     "※ '적극적으로 참여함' 같은 평가어보다 '무엇을 어떻게 했는지'를 적을수록 초안 품질이 올라갑니다.");
   return lines.join("\n");
