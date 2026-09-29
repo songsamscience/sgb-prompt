@@ -492,156 +492,6 @@ footer.site{border-top:1px solid var(--line);background:#fff;margin-top:10px;}
 .lcrow>*{min-width:0;}
 @media(max-width:720px){.settingsbar .summary{flex-basis:100%;}.step-head{flex-wrap:wrap;}.step-head .hint{flex-basis:100%;margin-left:43px;}.stdsearch{flex-wrap:wrap;}.stdsearch>*{min-width:0;}.limitrow select{min-width:0;max-width:100%;}}
 @media print{.settingsbar,.result-status,#saveStatus,#undoBtn{display:none!important;}}
-
-/* ==========================================================
-   2026-09-30 화면 개편 — 꼭 필요한 것만 먼저 보이고, 나머지는 눌러서 펼친다
-   ========================================================== */
-/* 히어로: 3단계 안내 */
-.hero{padding:34px 0 4px;}
-.flow{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0;padding:0;list-style:none;animation-delay:.2s;}
-.flow li{
-  display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--blue-ink);
-  background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 14px 6px 6px;box-shadow:var(--shadow);
-}
-.flow li b{width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-size:12px;display:grid;place-items:center;flex:none;}
-.hero .hero-note{font-size:13px;margin-top:12px;animation-delay:.24s;}
-main{padding-top:20px;}
-
-/* 상단 도구 막대(자료실 · 설정 보관) — 평소에는 접혀 있다 */
-.topbar{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px;}
-.tb-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.tb-btn{
-  font:inherit;font-size:12.5px;font-weight:700;color:var(--blue-deep);background:var(--bg);border:1px solid var(--line);
-  border-radius:999px;padding:7px 13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.14s;
-}
-.tb-btn:hover{border-color:var(--blue);}
-.tb-btn[aria-expanded="true"]{background:var(--blue);border-color:var(--blue);color:#fff;}
-.tb-btn .chev{font-size:10px;transition:transform .15s;}
-.tb-btn[aria-expanded="true"] .chev{transform:rotate(180deg);}
-.topbar #saveStatus{margin-left:auto;font-size:11.5px;color:var(--faint);}
-.tb-panel{margin-top:10px;padding-top:12px;border-top:1px solid var(--line-soft);animation:fade .2s ease;}
-.tb-desc{font-size:12px;color:var(--muted);margin:0 0 10px;}
-.tb-panel .reslink{border:1px solid var(--line);box-shadow:none;background:#fff;}
-.tb-panel .reslink:hover{border-color:var(--blue);box-shadow:var(--shadow);}
-.tb-actions{display:flex;gap:8px;flex-wrap:wrap;}
-
-/* 필수 · 선택 표시 */
-.tagreq,.tagopt{font-size:10.5px;font-weight:800;border-radius:999px;padding:2px 8px;margin-left:6px;vertical-align:2px;letter-spacing:0;}
-.tagreq{background:var(--pink-soft);color:#d8605a;border:1px solid #f7d6d3;}
-.tagopt{background:var(--bg);color:var(--faint);border:1px solid var(--line);}
-.step:hover{transform:none;}
-.grid2 > .field + .field{margin-top:0;}   /* 두 칸 나란히 놓일 때 높이 맞춤 */
-
-/* 작성 항목: 생기부 영역별로 묶기 */
-.cats{display:block;}
-.catgrp + .catgrp{margin-top:14px;}
-.catgrp-lab{font-size:11.5px;font-weight:800;color:var(--faint);margin:0 0 7px;letter-spacing:.01em;}
-.cats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-
-/* 항목별 입력칸: 한 번에 하나만 펼쳐지는 접이식 */
-.condwrap{margin-top:18px;}
-.condguide{font-size:12px;font-weight:700;color:var(--muted);margin:0 0 2px;}
-.cond{margin-top:8px;padding:0;border:1.5px solid #f7d6d3;border-radius:13px;background:#fff;overflow:hidden;}
-.cond.open{background:var(--pink-soft);border-color:var(--pink-deep);}
-.cond-h{
-  width:100%;font:inherit;text-align:left;background:transparent;border:0;cursor:pointer;color:var(--ink);
-  display:flex;align-items:center;gap:9px;padding:12px 14px;
-}
-.cond-h:hover{background:rgba(255,183,178,.16);}
-.cond-h{scroll-margin-top:12px;}
-.cond-h .ci{font-size:16px;flex:none;}
-.cond-h .cn{font-size:13.5px;font-weight:800;color:var(--blue-ink);flex:none;}
-.cond-h .cs{font-size:12px;color:var(--muted);font-weight:600;min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.cond-h .cb{font-size:10.5px;font-weight:800;border-radius:999px;padding:2px 9px;flex:none;border:1px solid;}
-.cb.need{background:#fff3e4;color:#b86a12;border-color:#f2ddba;}
-.cb.done{background:#e9f7f1;color:#128054;border-color:#c5e8d9;}
-.cb.opt{background:var(--bg);color:var(--faint);border-color:var(--line);}
-.cond-h .chev{font-size:11px;color:var(--faint);flex:none;transition:transform .15s;}
-.cond.open .cond-h .chev{transform:rotate(180deg);}
-.cond-b{display:none;padding:2px 14px 15px;}
-.cond.open .cond-b{display:block;animation:fade .2s ease;}
-.cond-b > .stdbox:first-child{margin-top:0;}
-
-/* 키워드·활동 묶음 탭 */
-.ttabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 2px;}
-.ttabs button{
-  font:inherit;font-size:12px;font-weight:800;color:var(--muted);background:#fff;border:1px solid var(--line);
-  border-radius:9px;padding:6px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.13s;
-}
-.ttabs button:hover{border-color:var(--blue);}
-.ttabs button.on{background:var(--blue-ink);border-color:var(--blue-ink);color:#fff;}
-.ttabs button .n{background:var(--pink-deep);color:#fff;border-radius:999px;font-size:10.5px;padding:0 6px;line-height:16px;}
-
-/* 성취기준 목록: 단원별 접이식 */
-.stdlist{max-height:380px;}
-.stdlist .uhd.tog{cursor:pointer;}
-.stdlist .uhd.tog:hover{background:#dcebf8;}
-.stdlist .uhd .uch{flex:none;width:11px;font-size:10px;color:var(--blue);}
-.stdlist .uhd .un{flex:1;}
-.stdlist .uhd .usel{flex:none;font-size:10.5px;font-weight:800;color:#fff;background:var(--blue);border-radius:999px;padding:1px 8px;}
-.stdlist .uhd .uall{margin-left:0;}
-.stdsearch select{display:none;}
-.stdsel .ss-h button{display:none;}
-
-/* 세부 옵션: 요약 한 줄 + 펼치기 */
-.optsum{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;}
-.optsum .os-txt{flex:1;min-width:200px;font-size:12.5px;color:var(--muted);line-height:1.6;}
-.optsum .os-txt b{
-  display:inline-block;font-size:11px;font-weight:800;border-radius:999px;padding:1px 9px;margin-right:8px;
-  background:#e9f7f1;color:#128054;border:1px solid #c5e8d9;
-}
-.optsum .os-txt b.custom{background:#eaf4fc;color:var(--blue-deep);border-color:#cfe4f5;}
-#optBody{margin-top:16px;animation:fade .2s ease;}
-.optlist{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.optlist button{
-  font:inherit;text-align:left;display:flex;align-items:flex-start;gap:10px;background:#fff;color:var(--ink);
-  border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;transition:.14s;
-}
-.optlist button:hover{border-color:var(--pink);}
-.optlist button.on{border-color:var(--blue);background:#f4fafe;}
-.optlist .sw{flex:none;width:30px;height:18px;border-radius:999px;background:#cfd9e3;position:relative;margin-top:2px;transition:.15s;}
-.optlist .sw::after{content:"";position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:.15s;}
-.optlist button.on .sw{background:var(--blue);}
-.optlist button.on .sw::after{left:14px;}
-.optlist .ot{min-width:0;}
-.optlist .ot b{display:block;font-size:13px;font-weight:700;}
-.optlist .ot small{display:block;font-size:11.5px;color:var(--faint);line-height:1.45;margin-top:1px;}
-
-/* 결과: 다음에 할 일 */
-.nextsteps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 16px;padding:0;list-style:none;}
-.nextsteps li{background:#fff;border:1px solid var(--line);border-radius:13px;padding:12px 14px;font-size:12.5px;color:var(--muted);line-height:1.5;}
-.nextsteps li b{display:block;color:var(--blue-ink);font-size:13px;font-weight:800;margin-bottom:2px;}
-.nextsteps li a{color:var(--blue);font-weight:700;}
-.obox{scroll-margin-top:14px;}
-.padvice .mini{margin:6px 0 0;}
-
-/* 하단 고정 요약 막대 */
-#dock{
-  position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);
-  border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(11,50,90,.1);
-  padding:10px 0 calc(10px + env(safe-area-inset-bottom));animation:fade .2s ease;
-}
-.dock-in{display:flex;align-items:center;gap:12px;}
-.dock-sum{flex:1;min-width:0;font-size:12.5px;font-weight:600;color:var(--muted);line-height:1.45;}
-.dock-sum span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.dock-sum b{color:var(--blue-ink);font-weight:800;}
-.dock-sum .miss{color:#b86a12;font-weight:800;}
-#dock .btn{padding:11px 20px;font-size:14px;flex:none;width:auto;}
-body.dock-on #topBtn{bottom:84px;}
-
-.foot .ver{font-size:11.5px;color:var(--faint);}
-.foot .ver a{color:var(--blue);font-weight:700;}
-
-@media(max-width:720px){
-  .cats-row{grid-template-columns:1fr 1fr;}
-  .optlist,.nextsteps{grid-template-columns:1fr;}
-  .topbar #saveStatus{flex-basis:100%;margin-left:2px;}
-  .cond-h{flex-wrap:wrap;}
-  .cond-h .cn{flex:1;}
-  .cond-h .cs{order:5;flex-basis:100%;white-space:normal;}
-}
-@media(max-width:440px){.cats-row{gap:8px;}.cat{padding:12px 10px 11px;}.cat small{display:none;}.cat b{padding-right:22px;}}   /* 휴대폰: 2열 유지, 설명은 생략 */
-@media print{#dock,.topbar{display:none!important;}}
 </style>
 </head>
 <body>
@@ -669,47 +519,38 @@ body.dock-on #topBtn{bottom:84px;}
   <section class="hero">
     <span class="eyebrow"><span class="dot"></span>2026 학교생활기록부 기재요령 · 2022 개정 교육과정 17개 교과 성취기준 반영</span>
     <h1>학년·과목·성취기준만 고르면<br><em>생기부 만능 프롬프트</em>가 완성됩니다</h1>
-    <p>고르기만 하면 <b>만능 프롬프트</b>와 <b>플랫폼별 제작 매뉴얼</b>이 만들어집니다. Gem·프로젝트·에이전트에 붙여넣으면 누가기록만 넣어도 초안을 써 주는 <b>나만의 생기부 AI</b>가 됩니다.</p>
-    <ol class="flow" aria-label="사용 순서">
-      <li><b>1</b>학교급·작성 항목 고르기</li>
-      <li><b>2</b>프롬프트 만들기</li>
-      <li><b>3</b>AI에 붙여넣기</li>
-    </ol>
-    <p class="hero-note">꼭 골라야 하는 것은 <b>작성 항목</b>뿐입니다. 나머지는 기본값이 들어 있어 그대로 두셔도 됩니다. 결과물은 <b>초안</b>이며, 최종 기재는 교사의 관찰·검토를 거칩니다.</p>
+    <p>선생님 상황에 딱 맞게 조립된 <b>만능 프롬프트 하나</b>와 <b>플랫폼별 제작 매뉴얼</b>을 만들어 드립니다. <b>중·고 17개 교과 성취기준 2,112개</b>(과학·국어·수학·영어·사회·역사·지리·도덕·기술가정·정보·체육·음악·미술·한문·환경·보건·진로와 직업)를 단원명·개념어로 검색해 골라 담으면 프롬프트에 그대로 들어갑니다. 이 프롬프트를 에이전트·Gem·프로젝트에 설치하면 누가기록만 붙여넣으면 되는 <b>나만의 생기부 AI</b>가 됩니다. 결과물은 <b>초안</b>이며, 최종 기재는 교사의 관찰·검토를 거칩니다.</p>
   </section>
 
   <main>
-    <!-- 자료실 · 설정 보관 (평소에는 접혀 있음) -->
-    <section class="topbar" aria-label="공식 자료실과 설정 보관">
-      <div class="tb-row">
-        <button type="button" class="tb-btn" id="tbRes" aria-expanded="false" aria-controls="tbResPanel">📥 공식 자료실 <span class="chev" aria-hidden="true">▾</span></button>
-        <button type="button" class="tb-btn" id="tbSet" aria-expanded="false" aria-controls="tbSetPanel">💾 설정 백업·불러오기 <span class="chev" aria-hidden="true">▾</span></button>
-        <button class="mini" id="undoBtn" type="button" hidden>↶ 입력 되돌리기</button>
-        <span id="saveStatus" role="status" aria-live="polite">입력값은 이 브라우저에 자동 저장됩니다.</span>
+    <!-- 공식 자료실 -->
+    <section class="resbar">
+      <div class="res-head">
+        <span class="res-title">📥 공식 자료실</span>
+        <span class="res-desc">사용하려는 AI의 에이전트·Gem·프로젝트 등의 '지식'에 교과 성취기준이 요약된 자료를 넣거나 원본을 첨부하면 더 정확해집니다 — 원본은 여기서 내려받으세요</span>
       </div>
-      <div class="tb-panel" id="tbResPanel" hidden>
-        <p class="tb-desc">사용하려는 AI의 에이전트·Gem·프로젝트 등의 '지식'에 교과 성취기준이 요약된 자료를 넣거나 원본을 첨부하면 더 정확해집니다 — 원본은 여기서 내려받으세요.</p>
-        <div class="res-links">
-          <a class="reslink" href="https://ncic.re.kr/inv/org/list.do" target="_blank" rel="noopener">
-            <span class="res-ic" style="background:linear-gradient(135deg,var(--blue) 25%,#2f8fd0);">📚</span>
-            <span class="res-txt"><b>2022 개정 교육과정 성취기준</b><small>NCIC 국가교육과정정보센터 · 교과별 원문(별책) 다운로드</small></span>
-            <span class="res-arrow">↗</span>
-          </a>
-          <a class="reslink" href="https://star.moe.go.kr/web/contents/m21100.do" target="_blank" rel="noopener">
-            <span class="res-ic" style="background:linear-gradient(135deg,var(--pink-deep) 20%,var(--pink));">📋</span>
-            <span class="res-txt"><b>2026 학교생활기록부 기재요령</b><small>학교생활기록부 종합지원포털 · 자료실 &gt; 기재요령(초·중·고)</small></span>
-            <span class="res-arrow">↗</span>
-          </a>
-        </div>
+      <div class="res-links">
+        <a class="reslink" href="https://ncic.re.kr/inv/org/list.do" target="_blank" rel="noopener">
+          <span class="res-ic" style="background:linear-gradient(135deg,var(--blue) 25%,#2f8fd0);">📚</span>
+          <span class="res-txt"><b>2022 개정 교육과정 성취기준</b><small>NCIC 국가교육과정정보센터 · 교과별 원문(별책) 다운로드</small></span>
+          <span class="res-arrow">↗</span>
+        </a>
+        <a class="reslink" href="https://star.moe.go.kr/web/contents/m21100.do" target="_blank" rel="noopener">
+          <span class="res-ic" style="background:linear-gradient(135deg,var(--pink-deep) 20%,var(--pink));">📋</span>
+          <span class="res-txt"><b>2026 학교생활기록부 기재요령</b><small>학교생활기록부 종합지원포털 · 자료실 &gt; 기재요령(초·중·고)</small></span>
+          <span class="res-arrow">↗</span>
+        </a>
       </div>
-      <div class="tb-panel" id="tbSetPanel" hidden>
-        <p class="tb-desc">선택한 항목과 성취기준을 파일로 보관하고 다시 불러올 수 있습니다. 백업에는 선생님 성함과 입력 설정이 포함됩니다. 아래 문구 검사기의 내용은 저장하지 않습니다.</p>
-        <div class="tb-actions">
-          <button class="mini" id="exportSettingsBtn" type="button">↓ 설정 백업</button>
-          <button class="mini" id="importSettingsBtn" type="button">↑ 설정 불러오기</button>
-          <input id="settingsFile" type="file" accept=".json,application/json" hidden />
-        </div>
-      </div>
+    </section>
+
+    <section class="settingsbar" aria-label="입력 설정 보관">
+      <div class="summary"><b>내 설정 보관함</b>선택한 항목과 성취기준을 파일로 보관하고 다시 불러오세요.</div>
+      <button class="mini" id="exportSettingsBtn" type="button">↓ 설정 백업</button>
+      <button class="mini" id="importSettingsBtn" type="button">↑ 설정 불러오기</button>
+      <input id="settingsFile" type="file" accept=".json,application/json" hidden />
+      <button class="mini" id="undoBtn" type="button" hidden>↶ 입력 되돌리기</button>
+      <p class="helper">백업에는 선생님 성함과 입력 설정이 포함됩니다. 아래 문구 검사기의 내용은 저장하지 않습니다.</p>
+      <span id="saveStatus" role="status" aria-live="polite">입력값은 이 브라우저에 자동 저장됩니다.</span>
     </section>
 
     <!-- STEP 1 -->
@@ -739,214 +580,167 @@ body.dock-on #topBtn{bottom:84px;}
     </section>
 
     <!-- STEP 2 -->
-    <section class="step" id="step2">
-      <div class="step-head"><div class="step-num">2</div><h2>작성 항목 선택<span class="tagreq">필수</span></h2><span class="hint">여러 개 선택 가능 · 고르면 아래에 항목별 입력칸이 열립니다</span></div>
+    <section class="step">
+      <div class="step-head"><div class="step-num">2</div><h2>작성 항목 선택</h2><span class="hint">복수 선택 가능 · 과세특은 교과 성취기준을 골라 담을 수 있습니다</span></div>
       <div class="cats" id="cats"></div>
 
-      <div class="condwrap" id="condWrap" hidden>
-        <p class="condguide">▼ 고른 항목의 입력칸입니다. 제목 줄을 누르면 펼치거나 접을 수 있습니다.</p>
-
-        <div class="cond" id="condSci">
-          <button type="button" class="cond-h" data-cat="과세특과학" aria-expanded="false" aria-controls="condSciBody">
-            <span class="ci" aria-hidden="true">🔬</span><span class="cn">과학 과세특</span><span class="cs"></span><span class="cb opt"></span><span class="chev" aria-hidden="true">▾</span>
-          </button>
-          <div class="cond-b" id="condSciBody">
-            <div class="stdbox">
-              <p class="sb-t">과학 과목 선택 <small>학교급·학년에 맞는 과목이 위에 표시됩니다</small></p>
-              <div id="crsChips"></div>
+      <div class="cond" id="condSci">
+        <p class="ct">🔬 과학 과세특 · 성취기준 연동</p>
+        <div class="stdbox">
+          <p class="sb-t">① 과학 과목 선택 <small>학교급·학년에 맞는 과목이 위에 표시됩니다</small></p>
+          <div id="crsChips"></div>
+        </div>
+        <div class="stdbox">
+          <p class="sb-t">② 성취기준 검색 · 선택 <small>단원명 · 성취기준 내용 · 코드로 검색됩니다</small></p>
+          <div class="stdsearch">
+            <input type="text" id="stdQ" placeholder="예) 광합성 · 열평형 · 9과03 · 전기" />
+            <select id="stdUnit"><option value="">단원 전체</option></select>
+          </div>
+          <div class="stdtools" id="stdTools"></div>
+          <div class="stdlist" id="stdList"></div>
+          <div class="stdsel">
+            <div class="ss-h">선택한 성취기준 <span class="cnt" id="stdCnt">0</span>
+              <button type="button" id="stdClear">전체 해제</button>
             </div>
-            <div class="stdbox">
-              <p class="sb-t">성취기준 고르기<span class="tagopt">선택</span> <small>단원을 누르면 펼쳐집니다 · 단원명·개념어·코드로 검색할 수도 있습니다</small></p>
-              <div class="stdsearch">
-                <input type="text" id="stdQ" placeholder="검색 예) 광합성 · 열평형 · 9과03 · 전기" />
-                <select id="stdUnit"><option value="">단원 전체</option></select>
-              </div>
-              <div class="stdtools" id="stdTools"></div>
-              <div class="stdlist" id="stdList"></div>
-              <div class="stdsel">
-                <div class="ss-h">선택한 성취기준 <span class="cnt" id="stdCnt">0</span>
-                  <button type="button" id="stdClear">전체 해제</button>
-                </div>
-                <div class="seltags" id="stdSel"><span class="none">아직 선택한 성취기준이 없습니다. 선택하지 않아도 프롬프트는 만들어집니다.</span></div>
-              </div>
+            <div class="seltags" id="stdSel"><span class="none">아직 선택한 성취기준이 없습니다. 선택하지 않아도 프롬프트는 만들어집니다.</span></div>
+          </div>
+        </div>
+        <p class="helper">선택한 성취기준이 프롬프트와 누가기록 양식에 그대로 들어갑니다. 2022 개정 과학과 교육과정(교육부 고시 제2022-33호 [별책 9]) 원문 기준입니다.</p>
+      </div>
+
+      <div class="cond" id="condSubject">
+        <p class="ct">📗 타교과 과세특 · 교과와 성취기준</p>
+        <div class="stdbox">
+          <p class="sb-t">① 교과 선택 <small>파란 칩은 2022 개정 성취기준이 연동됩니다</small></p>
+          <div class="subjpick" id="subjPick"></div>
+          <p class="pklegend"><span class="lg lg-db"></span>성취기준 연동 교과(단원·성취기준을 골라 담을 수 있음)<span class="lg lg-free"></span>과목명만 입력(성취기준 DB 없음)</p>
+        </div>
+        <div class="stdbox" id="subjStdBox" style="display:none;">
+          <p class="sb-t">② <b id="subjStdTitle">과목</b> 선택 <small>학교급·학년에 맞는 과목이 표시됩니다</small></p>
+          <div id="crsChips2"></div>
+          <p class="sb-t" style="margin-top:13px;">③ 성취기준 검색 · 선택 <small>단원명 · 성취기준 내용 · 코드로 검색됩니다</small></p>
+          <div class="stdsearch">
+            <input type="text" id="stdQ2" placeholder="예) 토론 · 일차함수 · 9국01 · 의사소통" />
+            <select id="stdUnit2"><option value="">단원 전체</option></select>
+          </div>
+          <div class="stdtools" id="stdTools2"></div>
+          <div class="stdlist" id="stdList2"></div>
+          <div class="stdsel">
+            <div class="ss-h">선택한 성취기준 <span class="cnt" id="stdCnt2">0</span>
+              <button type="button" id="stdClear2">전체 해제</button>
             </div>
-            <p class="helper">선택한 성취기준이 프롬프트와 누가기록 양식에 그대로 들어갑니다. 2022 개정 과학과 교육과정(교육부 고시 제2022-33호 [별책 9]) 원문 기준입니다.</p>
+            <div class="seltags" id="stdSel2"><span class="none">아직 선택한 성취기준이 없습니다. 선택하지 않아도 프롬프트는 만들어집니다.</span></div>
           </div>
         </div>
+        <span class="label" style="margin-top:14px;">과목명 <span style="color:var(--faint);font-weight:500;">(위에서 고른 교과가 자동으로 들어갑니다 · 쉼표로 여러 과목)</span></span>
+        <input type="text" id="subject" placeholder="예) 정보 — 여러 과목은 쉼표로 구분 (예: 수학, 정보)" />
+        <p class="helper">입력한 과목의 교과 특성(핵심 역량·활동)에 맞춰 과세특 프롬프트를 만들어 드립니다. 쉼표(,)로 여러 과목을 넣으면 <b>과목별 지침이 각각 생성</b>되며, 성취기준을 고른 교과에는 <b>선택한 성취기준이 함께 들어갑니다.</b></p>
+      </div>
 
-        <div class="cond" id="condSubject">
-          <button type="button" class="cond-h" data-cat="과세특타" aria-expanded="false" aria-controls="condSubjectBody">
-            <span class="ci" aria-hidden="true">📗</span><span class="cn">타교과 과세특</span><span class="cs"></span><span class="cb opt"></span><span class="chev" aria-hidden="true">▾</span>
-          </button>
-          <div class="cond-b" id="condSubjectBody">
-            <div class="stdbox">
-              <p class="sb-t">교과 선택<span class="tagreq">필수</span> <small>교과를 누르면 아래 과목명에 자동으로 들어갑니다</small></p>
-              <div class="subjpick" id="subjPick"></div>
-              <p class="pklegend"><span class="lg lg-db"></span>성취기준 연동 교과(단원·성취기준을 골라 담을 수 있음)<span class="lg lg-free"></span>과목명만 입력(성취기준 DB 없음)</p>
-              <span class="label" style="margin-top:14px;">과목명 <span style="color:var(--faint);font-weight:500;">(직접 고쳐 쓸 수 있습니다 · 쉼표로 여러 과목)</span></span>
-              <input type="text" id="subject" placeholder="예) 정보 — 여러 과목은 쉼표로 구분 (예: 수학, 정보)" />
-              <p class="helper">입력한 과목의 교과 특성(핵심 역량·활동)에 맞춰 과세특 프롬프트를 만들어 드립니다. 쉼표(,)로 여러 과목을 넣으면 <b>과목별 지침이 각각 생성</b>되며, 성취기준을 고른 교과에는 <b>선택한 성취기준이 함께 들어갑니다.</b></p>
-            </div>
-            <div id="subjStdBox" style="display:none;">
-              <div class="stdbox">
-                <p class="sb-t"><b id="subjStdTitle">과목</b> 선택 <small>학교급·학년에 맞는 과목이 표시됩니다</small></p>
-                <div id="crsChips2"></div>
-              </div>
-              <div class="stdbox">
-                <p class="sb-t">성취기준 고르기<span class="tagopt">선택</span> <small>단원을 누르면 펼쳐집니다 · 단원명·개념어·코드로 검색할 수도 있습니다</small></p>
-                <div class="stdsearch">
-                  <input type="text" id="stdQ2" placeholder="검색 예) 토론 · 일차함수 · 9국01 · 의사소통" />
-                  <select id="stdUnit2"><option value="">단원 전체</option></select>
-                </div>
-                <div class="stdtools" id="stdTools2"></div>
-                <div class="stdlist" id="stdList2"></div>
-                <div class="stdsel">
-                  <div class="ss-h">선택한 성취기준 <span class="cnt" id="stdCnt2">0</span>
-                    <button type="button" id="stdClear2">전체 해제</button>
-                  </div>
-                  <div class="seltags" id="stdSel2"><span class="none">아직 선택한 성취기준이 없습니다. 선택하지 않아도 프롬프트는 만들어집니다.</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="cond" id="condClub">
+        <p class="ct">🎯 동아리 · 정보</p>
+        <span class="label">동아리명</span>
+        <input type="text" id="clubName" placeholder="예) 과학탐구반, 코딩동아리, 방송부 …" />
+        <span class="label" style="margin-top:12px;">동아리 특징 <span style="color:var(--faint);font-weight:500;">(활동 내용·주제·성격)</span></span>
+        <textarea id="clubFeat" placeholder="예) 생활 속 현상을 실험으로 탐구하고 결과를 발표. 매달 주제 실험을 기획하고 모둠별 역할을 나눠 진행함."></textarea>
+        <p class="helper">동아리 성격을 파악해 그에 맞는 특기사항 작성 프롬프트를 만들어 드립니다.</p>
+      </div>
 
-        <div class="cond" id="condAuto">
-          <button type="button" class="cond-h" data-cat="자율자치" aria-expanded="false" aria-controls="condAutoBody">
-            <span class="ci" aria-hidden="true">🏛</span><span class="cn">자율·자치활동</span><span class="cs"></span><span class="cb opt"></span><span class="chev" aria-hidden="true">▾</span>
-          </button>
-          <div class="cond-b" id="condAutoBody">
-            <span class="label">활동 목록 <span style="color:var(--faint);font-weight:500;">(선택 · 묶음 이름을 누르면 활동이 바뀝니다)</span></span>
-            <div id="autoChips"></div>
-            <p class="tsum" id="autoSum"><span>이번 학년에 실제 운영한 활동을 고르세요.</span></p>
-            <span class="label" style="margin-top:13px;">자치활동(임원) 정보 <span style="color:var(--faint);font-weight:500;">(선택 · 전교/학년/학급 + 재임 기간)</span></span>
-            <input type="text" id="autoRole" placeholder="예) 1학기 학급 부회장(2026.03.02.-2026.08.14.)" />
-            <p class="helper">고른 활동명이 프롬프트와 누가기록 양식에 <b>활동명(일자)</b> 형식으로 들어갑니다. 목록에 없는 활동은 누가기록에 직접 적으면 됩니다.</p>
-          </div>
-        </div>
+      <div class="cond" id="condHabit">
+        <p class="ct">🌱 행동특성 및 종합의견 · 성향 키워드</p>
+        <div id="habitChips"></div>
+        <p class="tsum" id="habitSum"><span>선택한 키워드가 없어도 됩니다. 고르면 서술의 초점이 잡힙니다.</span></p>
+        <p class="helper">300자 상한에서는 2~3가지 특성에 집중하는 편이 좋습니다. <b>누가기록에서 근거가 확인되는 키워드만</b> 고르세요 — 키워드는 결론이 아니라 서술 방향입니다.</p>
+      </div>
 
-        <div class="cond" id="condClub">
-          <button type="button" class="cond-h" data-cat="동아리" aria-expanded="false" aria-controls="condClubBody">
-            <span class="ci" aria-hidden="true">🎯</span><span class="cn">동아리활동</span><span class="cs"></span><span class="cb opt"></span><span class="chev" aria-hidden="true">▾</span>
-          </button>
-          <div class="cond-b" id="condClubBody">
-            <span class="label">동아리명<span class="tagreq">필수</span></span>
-            <input type="text" id="clubName" placeholder="예) 과학탐구반, 코딩동아리, 방송부 …" />
-            <span class="label" style="margin-top:12px;">동아리 특징 <span style="color:var(--faint);font-weight:500;">(선택 · 활동 내용·주제·성격)</span></span>
-            <textarea id="clubFeat" placeholder="예) 생활 속 현상을 실험으로 탐구하고 결과를 발표. 매달 주제 실험을 기획하고 모둠별 역할을 나눠 진행함."></textarea>
-            <p class="helper">동아리 성격을 파악해 그에 맞는 특기사항 작성 프롬프트를 만들어 드립니다.</p>
-          </div>
-        </div>
+      <div class="cond" id="condAuto">
+        <p class="ct">🏛 자율·자치활동 · 활동 목록</p>
+        <div id="autoChips"></div>
+        <p class="tsum" id="autoSum"><span>이번 학년에 실제 운영한 활동을 고르세요.</span></p>
+        <span class="label" style="margin-top:13px;">자치활동(임원) 정보 <span style="color:var(--faint);font-weight:500;">(선택 · 전교/학년/학급 + 재임 기간)</span></span>
+        <input type="text" id="autoRole" placeholder="예) 1학기 학급 부회장(2026.03.02.-2026.08.14.)" />
+        <p class="helper">고른 활동명이 프롬프트와 누가기록 양식에 <b>활동명(일자)</b> 형식으로 들어갑니다. 목록에 없는 활동은 누가기록에 직접 적으면 됩니다.</p>
+      </div>
 
-        <div class="cond" id="condCareer">
-          <button type="button" class="cond-h" data-cat="진로" aria-expanded="false" aria-controls="condCareerBody">
-            <span class="ci" aria-hidden="true">🧭</span><span class="cn">진로활동</span><span class="cs"></span><span class="cb opt"></span><span class="chev" aria-hidden="true">▾</span>
-          </button>
-          <div class="cond-b" id="condCareerBody">
-            <span class="label">활동 목록 <span style="color:var(--faint);font-weight:500;">(선택 · 묶음 이름을 누르면 활동이 바뀝니다)</span></span>
-            <div id="careerChips"></div>
-            <p class="tsum" id="careerSum"><span>이번 학년에 실제 운영한 진로활동을 고르세요.</span></p>
-            <span class="label" style="margin-top:13px;">희망분야 표기 방식 <span style="color:var(--faint);font-weight:500;">(선택)</span></span>
-            <input type="text" id="careerWish" placeholder="예) 진로탐색 중임. / 과학기술 분야 관심" />
-            <p class="helper">희망분야는 학생별로 다르므로 누가기록에 적는 것이 원칙입니다. 여기에는 <b>공통 표기 방식</b>만 적어 두세요. 진로를 정하지 못한 학생도 기재 누락과 구분되도록 입력해야 합니다.</p>
-          </div>
-        </div>
+      <div class="cond" id="condCareer">
+        <p class="ct">🧭 진로활동 · 활동 목록</p>
+        <div id="careerChips"></div>
+        <p class="tsum" id="careerSum"><span>이번 학년에 실제 운영한 진로활동을 고르세요.</span></p>
+        <span class="label" style="margin-top:13px;">희망분야 표기 방식 <span style="color:var(--faint);font-weight:500;">(선택)</span></span>
+        <input type="text" id="careerWish" placeholder="예) 진로탐색 중임. / 과학기술 분야 관심" />
+        <p class="helper">희망분야는 학생별로 다르므로 누가기록에 적는 것이 원칙입니다. 여기에는 <b>공통 표기 방식</b>만 적어 두세요. 진로를 정하지 못한 학생도 기재 누락과 구분되도록 입력해야 합니다.</p>
+      </div>
 
-        <div class="cond" id="condHabit">
-          <button type="button" class="cond-h" data-cat="행발" aria-expanded="false" aria-controls="condHabitBody">
-            <span class="ci" aria-hidden="true">🌱</span><span class="cn">행동특성 및 종합의견</span><span class="cs"></span><span class="cb opt"></span><span class="chev" aria-hidden="true">▾</span>
-          </button>
-          <div class="cond-b" id="condHabitBody">
-            <span class="label">성향 키워드 <span style="color:var(--faint);font-weight:500;">(선택 · 2~3개 권장 · 묶음 이름을 누르면 키워드가 바뀝니다)</span></span>
-            <div id="habitChips"></div>
-            <p class="tsum" id="habitSum"><span>선택한 키워드가 없어도 됩니다. 고르면 서술의 초점이 잡힙니다.</span></p>
-            <p class="helper">300자 상한에서는 2~3가지 특성에 집중하는 편이 좋습니다. <b>누가기록에서 근거가 확인되는 키워드만</b> 고르세요 — 키워드는 결론이 아니라 서술 방향입니다.</p>
-          </div>
-        </div>
-
-        <div class="cond" id="condFree">
-          <button type="button" class="cond-h" data-cat="자유학기" aria-expanded="false" aria-controls="condFreeBody">
-            <span class="ci" aria-hidden="true">🌈</span><span class="cn">자유학기활동</span><span class="cs"></span><span class="cb opt"></span><span class="chev" aria-hidden="true">▾</span>
-          </button>
-          <div class="cond-b" id="condFreeBody">
-            <span class="label">작성할 영역 <span style="color:var(--faint);font-weight:500;">(선택)</span></span>
-            <div id="freeChips"></div>
-            <p class="tsum" id="freeSum"><span>작성할 영역을 고르세요.</span></p>
-            <span class="label" style="margin-top:13px;">프로그램명 <span style="color:var(--faint);font-weight:500;">(선택 · 여러 개는 쉼표로 구분)</span></span>
-            <input type="text" id="freeProg" placeholder="예) 생활 속 과학 탐구, 직업인과의 만남" />
-            <p class="helper">자유학기활동상황은 <b>영역별 1,000자</b>로 상한이 넉넉합니다. 영역별 이수시간과 특기사항을 함께 입력합니다.</p>
-          </div>
-        </div>
+      <div class="cond" id="condFree">
+        <p class="ct">🌈 자유학기활동 · 영역과 프로그램</p>
+        <div id="freeChips"></div>
+        <p class="tsum" id="freeSum"><span>작성할 영역을 고르세요.</span></p>
+        <span class="label" style="margin-top:13px;">프로그램명 <span style="color:var(--faint);font-weight:500;">(선택 · 여러 개는 쉼표로 구분)</span></span>
+        <input type="text" id="freeProg" placeholder="예) 생활 속 과학 탐구, 직업인과의 만남" />
+        <p class="helper">자유학기활동상황은 <b>영역별 1,000자</b>로 상한이 넉넉합니다. 영역별 이수시간과 특기사항을 함께 입력합니다.</p>
       </div>
     </section>
 
     <!-- STEP 3 -->
     <section class="step">
-      <div class="step-head"><div class="step-num">3</div><h2>사용할 AI 플랫폼</h2><span class="hint">고른 플랫폼에 맞는 제작 매뉴얼이 함께 만들어집니다</span></div>
-      <div class="plats" id="plats"></div>
+      <div class="step-head"><div class="step-num">3</div><h2>출력 옵션</h2><span class="hint">초안 품질을 좌우하는 설정입니다</span></div>
+      <div class="grid2">
+        <div class="field">
+          <span class="label">문구 개수</span>
+          <select id="optCount">
+            <option value="auto">항목별 권장 개수 (과세특 5 · 행동특성 2 · 그 외 3)</option>
+            <option value="2">항목마다 2개</option>
+            <option value="3">항목마다 3개</option>
+            <option value="5">항목마다 5개</option>
+            <option value="7">항목마다 7개 (관점을 최대한 다양하게)</option>
+          </select>
+          <p class="helper">개수를 늘리면 <b>표현만 바꾼 문구</b>가 아니라 <b>관점이 다른 문구</b>가 생성되도록 지시합니다.</p>
+        </div>
+        <div class="field">
+          <span class="label">분량 목표</span>
+          <select id="optLen">
+            <option value="short">간결 (상한의 45% 내외)</option>
+            <option value="std" selected>표준 (상한의 60% 내외) — 권장</option>
+            <option value="rich">충실 (상한의 80% 내외)</option>
+            <option value="max">상한 근접 (95% 내외)</option>
+            <option value="custom">직접 지정 — 항목별로 글자수 입력</option>
+          </select>
+          <p class="helper">NEIS 상한은 어떤 설정에서도 넘지 않습니다. 관찰 자료가 적으면 목표보다 짧게 쓰도록 지시됩니다.</p>
+          <div class="lencustom" id="lenCustomBox" style="display:none;"></div>
+        </div>
+      </div>
+      <div class="grid2" style="margin-top:16px;">
+        <div class="field">
+          <span class="label">문체 톤</span>
+          <div class="seg wide" id="segTone">
+            <button type="button" data-v="plain" aria-pressed="false">담백</button>
+            <button type="button" data-v="balance" aria-pressed="true">균형</button>
+            <button type="button" data-v="rich" aria-pressed="false">풍부</button>
+          </div>
+          <p class="helper">‘풍부’를 골라도 근거 없는 최상급·과장 표현은 금지됩니다.</p>
+        </div>
+        <div class="field">
+          <span class="label">프롬프트 길이 모드</span>
+          <div class="seg wide" id="segMode">
+            <button type="button" data-v="full" aria-pressed="true">표준</button>
+            <button type="button" data-v="compact" aria-pressed="false">압축</button>
+          </div>
+          <p class="helper"><b>압축</b>은 지침 입력칸 길이 제한이 있는 플랫폼(예: ChatGPT 맞춤형 GPT 8,000자)용으로 규정 문장을 요약합니다.</p>
+        </div>
+      </div>
+      <div class="field">
+        <span class="label">세부 옵션 <span style="color:var(--faint);font-weight:500;">(클릭해서 켜고 끄기 · 마우스를 올리면 설명이 나옵니다)</span></span>
+        <div class="optchips" id="optToggles"></div>
+      </div>
     </section>
 
     <!-- STEP 4 -->
-    <section class="step" id="stepOpt">
-      <div class="step-head"><div class="step-num">4</div><h2>출력 옵션<span class="tagopt">선택</span></h2><span class="hint">그대로 두면 기본 설정으로 만들어집니다</span></div>
-      <div class="optsum">
-        <div class="os-txt"><b id="optSumBadge">기본 설정</b><span id="optSumText"></span></div>
-        <button class="mini" id="optResetBtn" type="button" hidden>↺ 기본값으로</button>
-        <button class="mini" id="optToggleBtn" type="button" aria-expanded="false" aria-controls="optBody">옵션 직접 조정 ▾</button>
-      </div>
-      <div id="optBody" hidden>
-        <div class="grid2">
-          <div class="field">
-            <span class="label">문구 개수</span>
-            <select id="optCount">
-              <option value="auto">항목별 권장 개수 (과세특 5 · 행동특성 2 · 그 외 3)</option>
-              <option value="2">항목마다 2개</option>
-              <option value="3">항목마다 3개</option>
-              <option value="5">항목마다 5개</option>
-              <option value="7">항목마다 7개 (관점을 최대한 다양하게)</option>
-            </select>
-            <p class="helper">개수를 늘리면 <b>표현만 바꾼 문구</b>가 아니라 <b>관점이 다른 문구</b>가 생성되도록 지시합니다.</p>
-          </div>
-          <div class="field">
-            <span class="label">분량 목표</span>
-            <select id="optLen">
-              <option value="short">간결 (상한의 45% 내외)</option>
-              <option value="std" selected>표준 (상한의 60% 내외) — 권장</option>
-              <option value="rich">충실 (상한의 80% 내외)</option>
-              <option value="max">상한 근접 (95% 내외)</option>
-              <option value="custom">직접 지정 — 항목별로 글자수 입력</option>
-            </select>
-            <p class="helper">NEIS 상한은 어떤 설정에서도 넘지 않습니다. 관찰 자료가 적으면 목표보다 짧게 쓰도록 지시됩니다.</p>
-            <div class="lencustom" id="lenCustomBox" style="display:none;"></div>
-          </div>
-        </div>
-        <div class="grid2" style="margin-top:16px;">
-          <div class="field">
-            <span class="label">문체 톤</span>
-            <div class="seg wide" id="segTone">
-              <button type="button" data-v="plain" aria-pressed="false">담백</button>
-              <button type="button" data-v="balance" aria-pressed="true">균형</button>
-              <button type="button" data-v="rich" aria-pressed="false">풍부</button>
-            </div>
-            <p class="helper">‘풍부’를 골라도 근거 없는 최상급·과장 표현은 금지됩니다.</p>
-          </div>
-          <div class="field">
-            <span class="label">프롬프트 길이 모드</span>
-            <div class="seg wide" id="segMode">
-              <button type="button" data-v="full" aria-pressed="true">표준</button>
-              <button type="button" data-v="compact" aria-pressed="false">압축</button>
-            </div>
-            <p class="helper"><b>압축</b>은 지침 입력칸 길이 제한이 있는 플랫폼(예: ChatGPT 맞춤형 GPT 8,000자)용으로 규정 문장을 요약합니다.</p>
-          </div>
-        </div>
-        <div class="field" style="margin-top:16px;">
-          <span class="label">세부 옵션 <span style="color:var(--faint);font-weight:500;">(기본은 모두 꺼짐 · 누르면 켜져서 프롬프트에 적용됩니다)</span></span>
-          <div class="optlist" id="optToggles"></div>
-        </div>
-      </div>
+    <section class="step">
+      <div class="step-head"><div class="step-num">4</div><h2>사용할 AI 플랫폼</h2><span class="hint">이 플랫폼에 설치하면 '나만의 생기부 AI'가 됩니다</span></div>
+      <div class="plats" id="plats"></div>
     </section>
 
-    <div class="actionbar" id="mainActions">
+    <div class="actionbar">
       <button class="btn btn-primary" id="genBtn" type="button">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3m0 12v3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1M3 12h3m12 0h3M5.6 18.4l2.1-2.1m8.6-8.6 2.1-2.1"/></svg>
         프롬프트 만들기
@@ -962,13 +756,8 @@ body.dock-on #topBtn{bottom:84px;}
         <button class="mini" id="regenerateBtn" type="button" hidden>현재 설정으로 다시 만들기</button>
       </div>
       <span class="result-tag"><span class="dot"></span>선생님 맞춤 결과</span>
-      <ol class="nextsteps" aria-label="다음에 할 일">
-        <li><b>① 복사하기</b><a href="#boxAgent">에이전트 설정 문구</a>의 제목·설명·지침을 차례로 복사합니다.</li>
-        <li><b>② AI에 붙여넣기</b><a href="#boxManual">제작 매뉴얼</a> 순서대로 고른 플랫폼에 붙여넣습니다.</li>
-        <li><b>③ 사용하기</b><a href="#boxTmpl">누가기록 입력 양식</a>을 채워 완성된 생기부 AI에 넣습니다.</li>
-      </ol>
 
-      <div class="obox" id="boxAgent">
+      <div class="obox">
         <div class="obar">
           <h3>🤖 에이전트 설정 문구</h3>
           <span class="sp"></span>
@@ -1004,12 +793,12 @@ body.dock-on #topBtn{bottom:84px;}
         <div class="padvice" id="pAdvice"></div>
       </div>
 
-      <div class="obox" id="boxManual">
+      <div class="obox">
         <div class="obar"><h3 id="manTitle">📖 제작 매뉴얼</h3></div>
         <div class="manual" id="manualBody"></div>
       </div>
 
-      <div class="obox" id="boxTmpl">
+      <div class="obox">
         <div class="obar">
           <h3>🗒 누가기록 입력 양식</h3>
           <span class="sp"></span>
@@ -1070,17 +859,10 @@ body.dock-on #topBtn{bottom:84px;}
       <a href="https://www.youtube.com/@songsamscience" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .6 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.4 12 31 31 0 0 0 23 7.5ZM9.8 15.3V8.7l5.7 3.3-5.7 3.3Z"/></svg>YouTube</a>
       <a href="https://www.instagram.com/songsamscience" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.3 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.1.4.3 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.3 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.1-1 .3-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.3-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.1-.4-.3-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.3-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.1 1-.3 2.2-.4C8.4 2.2 8.8 2.2 12 2.2Zm0 4.9a4.9 4.9 0 1 1 0 9.8 4.9 4.9 0 0 1 0-9.8Zm0 8.1a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Zm6.2-8.3a1.1 1.1 0 1 1-2.3 0 1.1 1.1 0 0 1 2.3 0Z"/></svg>Instagram</a>
     </div>
-    <div class="ver">화면 개편 2026.09.30. · 예전 화면이 편하시면 <a href="이전버전/index_2026-09-17_개편전.html">이전 버전</a>을 그대로 쓰실 수 있습니다.</div>
     <div class="copy">© 송쌤과학 · 2026 학교생활기록부 기재요령(중·고) · 2022 개정 교육과정 성취기준(교육부 고시 제2022-33호 [별책 5·6·8·9·10·11·13·14·17]) 기반</div>
   </div>
 </footer>
 
-<div id="dock" hidden>
-  <div class="wrap dock-in">
-    <div class="dock-sum" id="dockSum" role="status" aria-live="polite"></div>
-    <button class="btn btn-primary" id="dockGen" type="button">프롬프트 만들기</button>
-  </div>
-</div>
 <button id="topBtn" type="button" aria-label="맨 위로">↑</button>
 <div id="pdfDoc"></div>
 
@@ -1525,13 +1307,10 @@ const state = { level:"중학교", grades:new Set(["1학년"]), cats:new Set(), 
                 terms:new Set(), autoActs:new Set(), careerActs:new Set(), freeAreas:new Set(),
                 subjKey:"", subjCourse:"", subjStds:new Set(),
                 opt:{ count:"auto", len:"std", lenCustom:{}, tone:"balance", mode:"full",
-                      code:false, chars:false, evidence:false, ask:false,
-                      example:false, batch:false, anon:false, selfcheck:false } };
-/* 화면 상태(저장하지 않음) — 펼친 입력칸 · 옵션 패널 · 묶음 탭 · 펼친 단원 */
-const view = { openCond:"", optOpen:false, tabs:{}, openUnits:{sci:new Set(), sub:new Set()} };
-/* 세부 옵션 기본값 스키마 버전 — 올리면 저장된 설정의 세부 옵션만 새 기본값으로 1회 재설정된다
-   v4(2026-09-30): 세부 옵션은 모두 꺼진 상태가 기본이며, 눌러서 켠 것만 프롬프트에 적용된다 */
-const OPT_SCHEMA_V = 4;
+                      code:false, chars:true, evidence:false, ask:false,
+                      example:true, batch:false, anon:false, selfcheck:false } };
+/* 세부 옵션 기본값 스키마 버전 — 올리면 저장된 설정의 세부 옵션만 새 기본값으로 1회 재설정된다 */
+const OPT_SCHEMA_V = 3;
 const OPT_TOGGLES = [
   {k:"code",     n:"성취기준 코드 병기", h:"각 문구 끝에 연계 성취기준 코드를 표시합니다(최종 입력 시 제거)"},
   {k:"chars",    n:"글자수·바이트 표기", h:"문구마다 글자수와 Byte를 함께 표시해 상한 초과를 막습니다"},
@@ -1551,20 +1330,16 @@ function gradeText(){
 }
 
 /* ---- 작성 항목 정의 ---- */
-/* g = 화면에서 묶어 보여 주는 생기부 영역(프롬프트 순서는 CAT_ORDER 를 따른다) */
 const CATS = [
-  {id:"과세특과학",g:"교과 세특",       name:"과학 과세특", desc:"과학 교과 세특 · 성취기준 연동"},
-  {id:"과세특타",  g:"교과 세특",       name:"타교과 과세특", desc:"과학 외 교과 세부능력 및 특기사항"},
-  {id:"개세특",    g:"교과 세특",       name:"개세특",     desc:"개인별 세부능력 및 특기사항"},
-  {id:"자율자치",  g:"창의적 체험활동", name:"자율·자치",  desc:"자율·자치활동 특기사항"},
-  {id:"동아리",    g:"창의적 체험활동", name:"동아리활동", desc:"동아리활동 특기사항"},
-  {id:"진로",      g:"창의적 체험활동", name:"진로활동",   desc:"진로활동 특기사항"},
-  {id:"행발",      g:"종합의견",        name:"행동특성",   desc:"행동특성 및 종합의견"},
-  {id:"자유학기",  g:"종합의견",        name:"자유학기활동", desc:"중학교 자유학기활동상황 · 영역별 1,000자"},
+  {id:"과세특과학",name:"과학 과세특", desc:"과학 교과 세특 · 성취기준 연동"},
+  {id:"과세특타",  name:"타교과 과세특", desc:"과학 외 교과 세부능력 및 특기사항"},
+  {id:"행발",    name:"행동특성",   desc:"행동특성 및 종합의견"},
+  {id:"동아리",  name:"동아리활동", desc:"동아리활동 특기사항"},
+  {id:"자율자치",name:"자율·자치",  desc:"자율·자치활동 특기사항"},
+  {id:"진로",    name:"진로활동",   desc:"진로활동 특기사항"},
+  {id:"자유학기",name:"자유학기활동", desc:"중학교 자유학기활동상황 · 영역별 1,000자"},
+  {id:"개세특",  name:"개세특",     desc:"개인별 세부능력 및 특기사항"},
 ];
-/* 항목별 입력칸(접이식) — 개세특은 추가 입력이 없다 */
-const COND_OF = {과세특과학:"condSci", 과세특타:"condSubject", 자율자치:"condAuto", 동아리:"condClub",
-                 진로:"condCareer", 행발:"condHabit", 자유학기:"condFree"};
 const CAT_ORDER = ["과세특과학","과세특타","행발","동아리","자율자치","진로","자유학기","개세특"];
 const CAT_NAME  = {과세특과학:"과학 과목별 세부능력 및 특기사항", 과세특타:"과목별 세부능력 및 특기사항(타교과)",
                    행발:"행동특성 및 종합의견", 동아리:"동아리활동", 자율자치:"자율·자치활동",
@@ -2038,7 +1813,7 @@ const PK_IDS = {
 };
 function pkSubject(k){ return k==="sci" ? "과학" : (state.subjKey||""); }
 function pkCourseId(k){ return k==="sci" ? state.sciCourse : state.subjCourse; }
-function pkSetCourse(k,v){ if(k==="sci") state.sciCourse=v; else state.subjCourse=v; view.openUnits[k].clear(); if(typeof renderLenCustom==="function") renderLenCustom(); }
+function pkSetCourse(k,v){ if(k==="sci") state.sciCourse=v; else state.subjCourse=v; if(typeof renderLenCustom==="function") renderLenCustom(); }
 function pkStds(k){ return k==="sci" ? state.stds : state.subjStds; }
 function pkCourses(k){ const sj=pkSubject(k); return (sj && STD_DB[sj]) ? STD_DB[sj] : []; }
 function pkCourseObj(k){
@@ -2487,8 +2262,8 @@ function generate(scroll = true){
   const warn = document.getElementById("warn");
   if(state.grades.size===0){ return showWarn("학년을 하나 이상 선택하세요.", "gradeChips"); }
   if(state.cats.size===0){ return showWarn("작성할 항목을 하나 이상 선택하세요.", "cats"); }
-  if(state.cats.has("과세특타") && !document.getElementById("subject").value.trim()){ openCond("과세특타"); return showWarn("타교과 과세특을 선택하셨습니다. 과목명을 입력하세요.", "subject"); }
-  if(state.cats.has("동아리") && !document.getElementById("clubName").value.trim()){ openCond("동아리"); return showWarn("동아리활동을 선택하셨습니다. 동아리명을 입력하세요.", "clubName"); }
+  if(state.cats.has("과세특타") && !document.getElementById("subject").value.trim()){ return showWarn("타교과 과세특을 선택하셨습니다. 과목명을 입력하세요.", "subject"); }
+  if(state.cats.has("동아리") && !document.getElementById("clubName").value.trim()){ return showWarn("동아리활동을 선택하셨습니다. 동아리명을 입력하세요.", "clubName"); }
   warn.classList.remove("show");
 
   currentPrompt = buildPrompt();
@@ -2526,10 +2301,7 @@ function showAdvice(len){
   if(lim && len>lim){
     cls="over";
     msg="⚠ "+p.name+"의 지침 입력칸은 약 "+lim.toLocaleString()+"자까지 지원합니다. 현재 "+len.toLocaleString()+"자로 "
-      +(len-lim).toLocaleString()+"자 초과 — "
-      +(isCompact()
-        ? "이미 압축 모드입니다. 작성 항목을 나눠 에이전트를 두 개로 만드세요."
-        : "<b>‘압축’ 모드로 바꾸면 줄어듭니다.</b> 그래도 넘으면 작성 항목을 나눠 에이전트를 두 개로 만드세요.<br><button class=\"mini\" id=\"advCompactBtn\" type=\"button\">압축 모드로 다시 만들기</button>");
+      +(len-lim).toLocaleString()+"자 초과 — <b>STEP 3에서 ‘프롬프트 길이 모드’를 ‘압축’으로 바꾸거나</b>, 작성 항목을 나눠 에이전트를 두 개로 만드세요.";
   } else if(len>12000){
     cls="warn";
     msg="지침이 "+len.toLocaleString()+"자로 깁니다. 지침이 길수록 지시 준수율이 떨어질 수 있으니, <b>작성 항목을 2~3개씩 나눠</b> 에이전트를 여러 개 만드는 편이 초안 품질에 유리합니다.";
@@ -2542,8 +2314,6 @@ function showAdvice(len){
   }
   box.className="padvice show "+cls;
   box.innerHTML=msg;
-  const cb=document.getElementById("advCompactBtn");
-  if(cb) cb.addEventListener("click",()=>{ state.opt.mode="compact"; syncSeg("segMode","compact"); saveState(); generate(false); });
 }
 function syncSeg(id, val){
   document.querySelectorAll("#"+id+" button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.v===val ? "true":"false"));
@@ -2726,8 +2496,6 @@ function renderCourseChips(k){
   const box = document.getElementById(PK_IDS[k].chips);
   if(!box) return;
   const groups = coursesForLevel(k);
-  const wrap = box.closest(".stdbox");
-  if(wrap) wrap.hidden = groups.reduce((n,g)=>n+g.items.length,0)===1;   // 고를 것이 없으면 보여 주지 않는다
   if(!groups.length){ box.innerHTML='<p class="cg-lab">선택한 학교급에 해당하는 과목이 없습니다.</p>'; return; }
   const valid = groups.some(g=>g.items.some(c=>c.id===pkCourseId(k)));
   if(!valid){ pkSetCourse(k, groups[0].items[0].id); pkStds(k).clear(); }
@@ -2772,12 +2540,8 @@ function renderStdList(k){
   const uEl = document.getElementById(PK_IDS[k].unit);
   const uSel = uEl ? uEl.value : "";
   const set = pkStds(k);
-  const openSet = view.openUnits[k];
-  /* 검색 중이거나 성취기준이 적은 과목은 모두 펼치고, 그 밖에는 누른 단원만 펼친다 */
-  const total = c.u.reduce((n,u)=>n+u.s.length,0);
-  const forceOpen = !!q || uSel!=="" || c.u.length===1 || total<=12;
   let html="", hits=0;
-  const visByUnit = {};      // 필터를 통과한 성취기준 코드(접힌 단원 포함)
+  const visByUnit = {};      // 화면에 보이는(=필터를 통과한) 성취기준 코드
   c.u.forEach((u,ui)=>{
     if(uSel!=="" && String(ui)!==uSel) return;
     const unitHit = u.n.toLowerCase().includes(q);
@@ -2786,17 +2550,11 @@ function renderStdList(k){
     hits += items.length;
     visByUnit[ui] = items.map(x=>x[0]);
     const allOn = items.every(x=>set.has(x[0]));
-    const nSel = u.s.filter(x=>set.has(x[0])).length;
-    const isOpen = forceOpen || openSet.has(ui);
-    html += '<div class="uhd'+(forceOpen?'':' tog')+'" data-ui="'+ui+'"'
-      + (forceOpen ? '' : ' role="button" tabindex="0" aria-expanded="'+isOpen+'"')+'>'
-      + (forceOpen ? '' : '<span class="uch" aria-hidden="true">'+(isOpen?"▾":"▸")+'</span>')
-      + '<span class="un">'+(ui+1)+'. '+hl(u.n,q)
+    html += '<div class="uhd"><span class="un">'+(ui+1)+'. '+hl(u.n,q)
       + ' <span style="font-weight:600;opacity:.7;">· '+items.length+'개</span></span>'
-      + '<span class="usel"'+(nSel?'':' hidden')+'>'+nSel+'개 선택</span>'
       + '<button type="button" class="uall'+(allOn?" on":"")+'" data-ui="'+ui+'">'
       + (allOn?"단원 해제":"단원 전체")+'</button></div>';
-    if(isOpen) items.forEach(x=>{
+    items.forEach(x=>{
       html += '<div class="stditem'+(set.has(x[0])?" on":"")+'" data-code="'+x[0]+'">'
         + '<span class="bx"><svg viewBox="0 0 24 24"><path d="M4 12l6 6L20 6"/></svg></span>'
         + '<span class="cd">'+hl(x[0],q)+'</span>'
@@ -2804,16 +2562,6 @@ function renderStdList(k){
     });
   });
   box.innerHTML = hits ? html : '<div class="empty">검색 결과가 없습니다.<br>다른 단어(단원명·개념어·코드)로 검색해 보세요.</div>';
-  box.querySelectorAll(".uhd.tog").forEach(h=>{
-    h.addEventListener("click",e=>{
-      if(e.target.closest(".uall")) return;
-      const ui = parseInt(h.dataset.ui,10);
-      if(openSet.has(ui)) openSet.delete(ui); else openSet.add(ui);
-      renderStdList(k);
-      const again = box.querySelector('.uhd[data-ui="'+ui+'"]');
-      if(again) again.focus({preventScroll:true});
-    });
-  });
   box.querySelectorAll(".stditem").forEach(el=>{
     el.addEventListener("click",()=>{
       const code = el.dataset.code;
@@ -2864,7 +2612,7 @@ function renderLenCustom(){
   const rows = lenRowsFor();
   if(!rows.length){
     box.innerHTML = '<p class="lc-h">항목별 목표 분량</p>'
-      + '<span class="none">STEP 2에서 작성 항목을 먼저 고르면 항목별 입력칸이 나타납니다.</span>';
+      + '<span class="none">STEP 1에서 작성 항목을 먼저 고르면 항목별 입력칸이 나타납니다.</span>';
     return;
   }
   box.innerHTML = '<p class="lc-h">항목별·과목별 목표 분량 '
@@ -2922,19 +2670,13 @@ function renderLenCustom(){
 /* 단원 버튼 상태(전체/해제) 동기화 */
 function syncUnitBtns(k, visByUnit){
   const box = document.getElementById(PK_IDS[k].list);
-  const set = pkStds(k), c = pkCourseObj(k);
+  const set = pkStds(k);
   if(!box) return;
   box.querySelectorAll(".uall").forEach(btn=>{
     const codes = visByUnit[btn.dataset.ui] || [];
     const allOn = codes.length>0 && codes.every(cd=>set.has(cd));
     btn.classList.toggle("on", allOn);
     btn.textContent = allOn ? "단원 해제" : "단원 전체";
-  });
-  box.querySelectorAll(".uhd").forEach(h=>{
-    const u = c && c.u[h.dataset.ui], badge = h.querySelector(".usel");
-    if(!u || !badge) return;
-    const n = u.s.filter(x=>set.has(x[0])).length;
-    badge.hidden = !n; badge.textContent = n+"개 선택";
   });
 }
 
@@ -3038,221 +2780,61 @@ function renderCats(){
   const el = document.getElementById("cats");
   if(state.level!=="중학교") state.cats.delete("자유학기");
   el.innerHTML = "";
-  const list = catsForLevel();
-  [...new Set(list.map(c=>c.g))].forEach(g=>{
-    const grp=document.createElement("div"); grp.className="catgrp";
-    const lab=document.createElement("p"); lab.className="catgrp-lab";
-    lab.textContent = (g==="종합의견" && state.level==="중학교") ? "종합의견 · 자유학기" : g;
-    const row=document.createElement("div"); row.className="cats-row";
-    list.filter(c=>c.g===g).forEach(c=>{
-      const d=document.createElement("div"); d.className="cat"+(state.cats.has(c.id)?" on":""); d.dataset.id=c.id;
-      d.innerHTML='<span class="tick"><svg viewBox="0 0 24 24"><path d="M4 12l6 6L20 6"/></svg></span><b>'+c.name+'</b><small>'+c.desc+'</small>';
-      d.addEventListener("click",()=>{
-        d.classList.toggle("on");
-        const on=d.classList.contains("on");
-        if(on) state.cats.add(c.id); else state.cats.delete(c.id);
-        /* 방금 고른 항목의 입력칸만 펼치고 나머지는 접는다 */
-        if(on && COND_OF[c.id]) view.openCond=c.id;
-        else if(!on && view.openCond===c.id) view.openCond="";
-        syncConds(); saveState();
-      });
-      row.appendChild(d);
+  catsForLevel().forEach(c=>{
+    const d=document.createElement("div"); d.className="cat"+(state.cats.has(c.id)?" on":""); d.dataset.id=c.id;
+    d.innerHTML='<span class="tick"><svg viewBox="0 0 24 24"><path d="M4 12l6 6L20 6"/></svg></span><b>'+c.name+'</b><small>'+c.desc+'</small>';
+    d.addEventListener("click",()=>{
+      d.classList.toggle("on");
+      if(d.classList.contains("on")) state.cats.add(c.id); else state.cats.delete(c.id);
+      syncConds(); saveState();
     });
-    grp.appendChild(lab); grp.appendChild(row); el.appendChild(grp);
+    el.appendChild(d);
   });
   syncConds();
 }
-/* 묶음이 여러 개면 탭으로 나눠 한 번에 한 묶음만 보여 준다 */
 function chipGroup(box, groups, set, sumEl, sumEmpty){
   box.innerHTML = "";
-  const names = Object.keys(groups), tabbed = names.length>1, key = box.id;
-  if(tabbed && !names.includes(view.tabs[key])){
-    view.tabs[key] = names.find(g=>groups[g].some(it=>set.has(it))) || names[0];
-  }
   const render = ()=>{
     if(!sumEl) return;
     sumEl.innerHTML = set.size ? ("선택 "+set.size+"개 · "+[...set].map(escapeHtml).join(" · ")) : ('<span>'+sumEmpty+'</span>');
   };
-  const tabBtns=[], panes={};
-  const syncTabs = ()=>{
-    tabBtns.forEach(t=>{
-      const g=t.dataset.g, n=groups[g].filter(it=>set.has(it)).length, on=view.tabs[key]===g;
-      t.classList.toggle("on",on); t.setAttribute("aria-selected",String(on));
-      t.innerHTML = escapeHtml(g)+(n?' <span class="n">'+n+'</span>':'');
-    });
-    names.forEach(g=>{ panes[g].hidden = tabbed && view.tabs[key]!==g; });
-  };
-  if(tabbed){
-    const tabs=document.createElement("div"); tabs.className="ttabs"; tabs.setAttribute("role","tablist");
-    names.forEach(g=>{
-      const t=document.createElement("button"); t.type="button"; t.dataset.g=g; t.setAttribute("role","tab");
-      t.addEventListener("click",()=>{ view.tabs[key]=g; syncTabs(); });
-      tabs.appendChild(t); tabBtns.push(t);
-    });
-    box.appendChild(tabs);
-  }
-  names.forEach(g=>{
+  Object.entries(groups).forEach(([g, items])=>{
     const wrap=document.createElement("div"); wrap.className="tgrp";
+    if(g) wrap.innerHTML='<p class="tg-lab">'+g+'</p>';
     const row=document.createElement("div"); row.className="tchips";
-    groups[g].forEach(it=>{
+    items.forEach(it=>{
       const b=document.createElement("button"); b.type="button"; b.textContent=it;
       if(set.has(it)) b.classList.add("on");
       b.addEventListener("click",()=>{
         if(set.has(it)) set.delete(it); else set.add(it);
-        b.classList.toggle("on"); render(); syncTabs(); saveState();
+        b.classList.toggle("on"); render(); saveState();
       });
       row.appendChild(b);
     });
-    wrap.appendChild(row); box.appendChild(wrap); panes[g]=wrap;
+    wrap.appendChild(row); box.appendChild(wrap);
   });
-  syncTabs(); render();
+  render();
 }
-/* 세부 옵션 — 기본은 모두 꺼짐, 누른 것만 켜져서 프롬프트에 적용된다 */
 function renderOptToggles(){
   const box=document.getElementById("optToggles");
   if(!box) return;
   box.innerHTML="";
   OPT_TOGGLES.forEach(o=>{
-    const b=document.createElement("button"); b.type="button";
-    b.innerHTML='<span class="sw" aria-hidden="true"></span><span class="ot"><b>'+o.n+'</b><small>'+o.h+'</small></span>';
+    const b=document.createElement("button"); b.type="button"; b.textContent=o.n; b.title=o.h;
     if(state.opt[o.k]) b.classList.add("on");
     b.addEventListener("click",()=>{ state.opt[o.k]=!state.opt[o.k]; b.classList.toggle("on", state.opt[o.k]); saveState(); });
     box.appendChild(b);
   });
 }
-function optIsDefault(){
-  const d=DEFAULT_SETTINGS.opt;
-  return Object.keys(d).every(k=> k==="lenCustom" || state.opt[k]===d[k]);
-}
-function syncOptSummary(){
-  const badge=document.getElementById("optSumBadge"), txt=document.getElementById("optSumText");
-  if(!badge || !txt) return;
-  const o=state.opt, def=optIsDefault();
-  const LENN={short:"간결",std:"표준",rich:"충실",max:"상한 근접",custom:"직접 지정"}, TONE={plain:"담백",balance:"균형",rich:"풍부"};
-  const on=OPT_TOGGLES.filter(t=>o[t.k]).map(t=>t.n);
-  badge.textContent = def ? "기본 설정" : "직접 설정";
-  badge.classList.toggle("custom", !def);
-  txt.textContent = "문구 "+(o.count==="auto"?"항목별 권장 개수":o.count+"개")+" · 분량 "+LENN[o.len]+" · 문체 "+TONE[o.tone]
-    + " · "+(o.mode==="compact"?"압축 지침":"표준 지침")
-    + " · 세부 옵션 "+(on.length ? on.length+"개 켜짐("+on.join(", ")+")" : "모두 꺼짐");
-  document.getElementById("optResetBtn").hidden = def;
-}
-function setOptOpen(open){
-  view.optOpen=open;
-  document.getElementById("optBody").hidden=!open;
-  const b=document.getElementById("optToggleBtn");
-  b.setAttribute("aria-expanded",String(open));
-  b.textContent = open ? "옵션 접기 ▴" : "옵션 직접 조정 ▾";
-}
-function resetOpts(){
-  state.opt=JSON.parse(JSON.stringify(DEFAULT_SETTINGS.opt));
-  document.getElementById("optCount").value=state.opt.count;
-  document.getElementById("optLen").value=state.opt.len;
-  syncSeg("segTone",state.opt.tone); syncSeg("segMode",state.opt.mode);
-  renderOptToggles(); renderLenCustom(); saveState();
-}
-
-/* ---- 항목별 입력칸(접이식) ---- */
-const COND_BADGE = {need:"입력 필요", done:"✓ 입력됨", opt:"선택 사항"};
-function condInfo(cat){
-  const val = id => V(id).trim();
-  const pick = (n,unit)=> n ? {sum:unit+" "+n+"개 선택", st:"done"} : {sum:"고르지 않아도 프롬프트는 만들어집니다", st:"opt"};
-  switch(cat){
-    case "과세특과학": {
-      const c=pkCourseObj("sci"), n=selectedStds("sci").length;
-      return {sum:(c?c.name:"과학")+" · "+(n ? "성취기준 "+n+"개 선택" : "성취기준은 고르지 않아도 됩니다"), st:n?"done":"opt"};
-    }
-    case "과세특타": {
-      const s=val("subject"), n=state.subjKey ? selectedStds("sub").length : 0;
-      return s ? {sum:s+(n?" · 성취기준 "+n+"개 선택":""), st:"done"} : {sum:"교과를 고르거나 과목명을 입력하세요", st:"need"};
-    }
-    case "동아리": { const s=val("clubName"); return s ? {sum:s, st:"done"} : {sum:"동아리명을 입력하세요", st:"need"}; }
-    case "행발":     return pick(state.terms.size,"키워드");
-    case "자율자치": return pick(state.autoActs.size,"활동");
-    case "진로":     return pick(state.careerActs.size,"활동");
-    case "자유학기": return pick(state.freeAreas.size,"영역");
-  }
-  return {sum:"", st:"opt"};
-}
-function syncCondSummaries(){
-  Object.entries(COND_OF).forEach(([cat,id])=>{
-    const el=document.getElementById(id);
-    if(!el || !state.cats.has(cat)) return;
-    const info=condInfo(cat), cb=el.querySelector(".cb");
-    el.querySelector(".cs").textContent=info.sum;
-    cb.className="cb "+info.st; cb.textContent=COND_BADGE[info.st];
-  });
-}
-function openCond(cat){ view.openCond=cat; syncConds(); }
-/* 불러온 설정에서는 입력이 빠진 항목(없으면 하나뿐인 항목)만 펼친다 */
-function pickOpenCond(){
-  const on=CATS.map(c=>c.id).filter(c=>state.cats.has(c) && COND_OF[c]);
-  view.openCond = on.find(c=>condInfo(c).st==="need") || (on.length===1 ? on[0] : "");
-}
 function syncConds(){
-  let any=false;
-  Object.entries(COND_OF).forEach(([cat,id])=>{
-    const el=document.getElementById(id), on=state.cats.has(cat), open=on && view.openCond===cat;
-    any = any || on;
-    el.classList.toggle("show", on);
-    el.classList.toggle("open", open);
-    el.querySelector(".cond-h").setAttribute("aria-expanded", String(open));
-  });
-  document.getElementById("condWrap").hidden=!any;
-  syncCondSummaries();
+  document.getElementById("condSci").classList.toggle("show", state.cats.has("과세특과학"));
+  document.getElementById("condSubject").classList.toggle("show", state.cats.has("과세특타"));
+  document.getElementById("condClub").classList.toggle("show", state.cats.has("동아리"));
+  document.getElementById("condHabit").classList.toggle("show", state.cats.has("행발"));
+  document.getElementById("condAuto").classList.toggle("show", state.cats.has("자율자치"));
+  document.getElementById("condCareer").classList.toggle("show", state.cats.has("진로"));
+  document.getElementById("condFree").classList.toggle("show", state.cats.has("자유학기"));
   renderLenCustom();
-}
-
-/* ---- 하단 요약 막대 · 상단 도구 막대 ---- */
-function missingMsg(){
-  if(state.grades.size===0) return "학년을 선택하세요";
-  if(state.cats.size===0) return "작성 항목을 하나 이상 선택하세요";
-  if(state.cats.has("과세특타") && !V("subject").trim()) return "타교과 과목명을 입력하세요";
-  if(state.cats.has("동아리") && !V("clubName").trim()) return "동아리명을 입력하세요";
-  return "";
-}
-function syncDock(){
-  const el=document.getElementById("dockSum");
-  if(!el) return;
-  const cats=chosenCats().map(c=>CAT_SHORT[c]), miss=missingMsg();
-  const items = cats.length ? cats.slice(0,2).join(" · ")+(cats.length>2 ? " 외 "+(cats.length-2)+"개" : "") : "";
-  el.innerHTML = '<span><b>'+escapeHtml(state.level+" "+gradeText())+'</b>'+(items ? " · "+escapeHtml(items) : "")
-    + " · "+escapeHtml(PLATFORMS[state.platform].tag)+'</span>'
-    + (miss ? '<span class="miss">⚠ '+escapeHtml(miss)+'</span>' : '<span>준비되었습니다. 버튼을 누르면 프롬프트가 만들어집니다.</span>');
-}
-function syncChrome(){ syncCondSummaries(); syncOptSummary(); syncDock(); }
-function initChrome(){
-  const bars=[["tbRes","tbResPanel"],["tbSet","tbSetPanel"]];
-  bars.forEach(([b,p])=>{
-    document.getElementById(b).addEventListener("click",()=>{
-      const open=document.getElementById(p).hidden;
-      bars.forEach(([b2,p2])=>{ document.getElementById(p2).hidden=true; document.getElementById(b2).setAttribute("aria-expanded","false"); });
-      document.getElementById(p).hidden=!open;
-      document.getElementById(b).setAttribute("aria-expanded",String(open));
-    });
-  });
-  document.querySelectorAll(".cond-h").forEach(h=>{
-    h.addEventListener("click",()=>{
-      const cat=h.dataset.cat;
-      view.openCond = view.openCond===cat ? "" : cat;
-      syncConds();
-      const r=h.getBoundingClientRect();
-      if(view.openCond && (r.top<0 || r.top>window.innerHeight*0.6)) h.scrollIntoView({behavior:"smooth",block:"start"});
-    });
-  });
-  document.getElementById("optToggleBtn").addEventListener("click",()=>setOptOpen(!view.optOpen));
-  document.getElementById("optResetBtn").addEventListener("click",resetOpts);
-  document.getElementById("dockGen").addEventListener("click",()=>generate());
-  /* 실행 버튼이 화면 아래에 있을 때만 요약 막대를 띄운다 */
-  const dock=document.getElementById("dock");
-  if("IntersectionObserver" in window){
-    new IntersectionObserver(es=>{
-      const e=es[es.length-1], show=!e.isIntersecting && e.boundingClientRect.top>0;
-      dock.hidden=!show; document.body.classList.toggle("dock-on",show);
-    }).observe(document.getElementById("mainActions"));
-  }
-  setOptOpen(false);
-  syncChrome();
 }
 
 /* =========================================================
@@ -3288,7 +2870,7 @@ function persistState(){
 }
 function saveState(){
   pendingSave=true;
-  updateResultStatus(); syncAccessibleState(); syncChrome();
+  updateResultStatus(); syncAccessibleState();
   setSaveStatus("변경사항 저장 중…");
   clearTimeout(saveTimer); saveTimer=setTimeout(persistState,300);
 }
@@ -3360,10 +2942,8 @@ function applySettings(d){
   document.querySelectorAll("#plats .plat").forEach(b=>b.classList.toggle("on",b.dataset.key===state.platform));
   document.getElementById("optCount").value=state.opt.count;
   document.getElementById("optLen").value=state.opt.len;
-  view.tabs={}; view.openUnits.sci.clear(); view.openUnits.sub.clear();
-  pickOpenCond();
   renderCats(); renderAllChipGroups(); renderOptToggles(); refreshPickers(); syncSubjBox(); syncConds();
-  syncAccessibleState(); syncChrome();
+  syncAccessibleState();
 }
 function loadState(){
   try{
@@ -3445,7 +3025,7 @@ function initAccessibility(){
   const names={teacher:"선생님 성함",subject:"타교과 과목명",clubName:"동아리명",clubFeat:"동아리 특징",autoRole:"자치활동 임원 정보",careerWish:"희망분야 표기 방식",freeProg:"자유학기 프로그램명",stdQ:"과학 성취기준 검색",stdQ2:"타교과 성취기준 검색",stdUnit:"과학 단원 필터",stdUnit2:"타교과 단원 필터",optCount:"문구 개수",optLen:"분량 목표",agentTitle:"에이전트 제목",agentDesc:"에이전트 설명",checkText:"검사할 생활기록부 문구",limitSel:"바이트 한도 기준 항목"};
   Object.entries(names).forEach(([id,name])=>document.getElementById(id).setAttribute("aria-label",name));
   document.addEventListener("keydown",e=>{
-    if(e.target.matches(".cat,.plat,.stditem,.uhd.tog") && (e.key==="Enter" || e.key===" ")){
+    if(e.target.matches(".cat,.plat,.stditem") && (e.key==="Enter" || e.key===" ")){
       e.preventDefault(); e.target.click();
     }
   });
@@ -3562,7 +3142,6 @@ function renderAllChipGroups(){
 }
 function init(){
   loadState();
-  pickOpenCond();
   initSettingsTools();
   // 학교급
   document.querySelectorAll("#segLevel button").forEach(b=>{
@@ -3654,7 +3233,6 @@ function init(){
   document.getElementById("checkText").addEventListener("input",updateChecker);
   document.getElementById("limitSel").addEventListener("change",updateChecker);
   updateChecker();
-  initChrome();
   initAccessibility();
   // 맨 위로
   const topBtn=document.getElementById("topBtn");
