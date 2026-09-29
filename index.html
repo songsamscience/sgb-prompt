@@ -310,6 +310,11 @@ ol.steps li:last-child::after{display:none;}
 ol.steps li strong{color:var(--blue-deep);font-weight:700;}
 ol.steps li .chip{display:inline-block;font-size:11.5px;font-weight:700;color:var(--pink-deep);background:var(--pink-soft);padding:1px 7px;border-radius:6px;margin:0 1px;}
 .mnote{font-size:12.5px;color:var(--faint);margin:15px 0 0;padding-top:13px;border-top:1px dashed var(--line);}
+.msrc{font-size:12px;color:var(--muted);margin:14px 0 0;}
+.msrc a{color:var(--blue);font-weight:700;}
+.plat .pt small.plim{color:#b86a12;font-weight:700;}
+.amrow.skip textarea,.amrow.skip .mini{opacity:.45;}
+.amrow.skip .amlabel small{color:#b86a12;}
 
 /* agent meta copy rows */
 .agentmeta{padding:16px 20px 18px;display:flex;flex-direction:column;gap:12px;}
@@ -936,7 +941,7 @@ body.dock-on #topBtn{bottom:84px;}
               <button type="button" data-v="full" aria-pressed="true">표준</button>
               <button type="button" data-v="compact" aria-pressed="false">압축</button>
             </div>
-            <p class="helper"><b>압축</b>은 지침 입력칸 길이 제한이 있는 플랫폼(예: ChatGPT 맞춤형 GPT 8,000자)용으로 규정 문장을 요약합니다.</p>
+            <p class="helper"><b>압축</b>은 지침 입력칸 길이 제한이 있는 플랫폼(ChatGPT 프로젝트·Copilot 에이전트 지침 8,000자)용으로 규정 문장을 요약합니다.</p>
           </div>
         </div>
         <div class="field" style="margin-top:16px;">
@@ -976,12 +981,12 @@ body.dock-on #topBtn{bottom:84px;}
         </div>
         <div class="agentmeta">
           <div class="amrow">
-            <div class="amlabel">① 제목<small>에이전트/Gem/프로젝트 이름</small></div>
+            <div class="amlabel">① 제목<small id="agentTitleHint">에이전트/Gem/프로젝트 이름</small></div>
             <input type="text" id="agentTitle" />
             <button class="mini amcopy" data-src="agentTitle" type="button">📋 복사</button>
           </div>
-          <div class="amrow">
-            <div class="amlabel">② 설명<small>소개 문구</small></div>
+          <div class="amrow" id="agentDescRow">
+            <div class="amlabel">② 설명<small id="agentDescHint">소개 문구</small></div>
             <textarea id="agentDesc" rows="3" style="min-height:0;"></textarea>
             <button class="mini amcopy" data-src="agentDesc" type="button">📋 복사</button>
           </div>
@@ -1686,22 +1691,29 @@ function clubProfile(name, feat){
   return {g:"참여도·역할과 개별적 특성, 협력과 성장 과정", v:"주제/역할 → 활동 과정 → 배움과 성장"};
 }
 
-/* ---- 플랫폼 & 매뉴얼 (2026.08 기준 화면 구성) ---- */
+/* ---- 플랫폼 & 매뉴얼 — 각 플랫폼 공식 도움말 기준 (PLAT_CHECKED 에 확인일 표기) ----
+   lim: 지침 입력칸 글자 한도 · nameMax: 이름 글자 한도 · nameLabel/descLabel: '에이전트 설정 문구' 칸 안내
+   src: 공식 도움말 주소(화면·PDF에 함께 표시) */
+const PLAT_CHECKED = "2026.09.30.";
 const PLATFORMS = {
   gem:{name:"Google Gemini Gem", tag:"구글 Gem", badge:"✦", color:"#1a73e8",
-    need:"Google 계정 (만 13세 이상 · 무료 개인 계정에서도 Gem 생성 가능)",
+    nameLabel:"Gem 이름", descLabel:"Gem 설명(선택)",
+    src:"https://support.google.com/gemini/answer/15146780?hl=ko",
+    need:"Google 계정 (만 13세 이상 · 무료 개인 계정에서도 Gem 생성 가능 · 학교 Workspace 계정은 관리자 설정에 따라 다름)",
     steps:[
       "Gemini(gemini.google.com)에 Google 계정으로 로그인합니다.",
       "왼쪽 위 <b>사이드바 열기</b> 아이콘을 눌러 사이드바를 펼치고 <b>‘Gems’</b>를 클릭합니다.",
       "<b>‘새 Gem’</b> 버튼을 클릭합니다.",
-      "<b>‘Gem 이름’</b>에 이름(예: <chip>송쌤과학 생기부 도우미</chip>)을 입력합니다.",
+      "<b>‘이름’</b>에 Gem 이름(예: <chip>송쌤과학 생기부 도우미</chip>)을 입력합니다.",
       "<b>‘요청 사항’</b>(지침·Instructions 칸)에 위에서 생성된 프롬프트를 <b>그대로 붙여넣습니다.</b>",
-      "(선택) <b>‘지식’</b> 섹션의 <b>‘파일 추가’</b>로 성취기준·기재요령 등 참고 자료를 올립니다. 기기에서 업로드하거나 <b>Google Drive</b>에서 가져올 수 있습니다.",
+      "(선택) <b>‘지식’</b> 섹션의 <b>‘파일 추가’</b>로 성취기준·기재요령 등 참고 자료를 올립니다. (최대 10개 · 기기 업로드 또는 <b>Google Drive</b> — Drive에서 가져오려면 <b>‘활동 기록 유지’</b>가 켜져 있어야 합니다)",
       "오른쪽 <b>미리보기</b> 칸에 짧은 누가기록을 넣어 응답을 확인합니다.",
       "<b>‘저장’</b>을 누르면 사이드바 Gems 목록에 추가됩니다. 목록에서 선택해 학생 누가기록을 붙여넣어 사용합니다."
     ],
-    note:"2026년 8월 기준 화면입니다. 사이드바 메뉴가 ‘Gem 관리자’로 보이는 버전도 있으며, 명칭은 업데이트에 따라 달라질 수 있습니다."},
+    note:"사이드바 메뉴가 ‘Gem 관리자’로 보이는 버전도 있습니다. Drive에서 가져온 파일은 원본을 고치면 Gem에도 최신 내용이 반영됩니다."},
   claude:{name:"Claude 프로젝트", tag:"Claude 프로젝트", badge:"◆", color:"#0F6FB8",
+    nameLabel:"프로젝트 이름", descLabel:"프로젝트 설명",
+    src:"https://support.claude.com/ko/articles/9519177-how-can-i-create-and-manage-projects",
     need:"Claude 계정 — 무료 플랜도 프로젝트 생성 가능(최대 5개) · 유료 플랜은 개수 제한 없이 대용량 지식 활용",
     steps:[
       "Claude(claude.ai)에 로그인합니다.",
@@ -1712,45 +1724,52 @@ const PLATFORMS = {
       "오른쪽 <b>‘프로젝트 지식(Project knowledge)’</b> 영역의 <b>‘+’</b>로 성취기준·기재요령 등 참고 파일을 올립니다.",
       "프로젝트 안에서 <b>새 대화</b>를 열고 학생 누가기록을 붙여넣어 사용합니다. 같은 지침이 프로젝트의 모든 대화에 자동 적용됩니다."
     ],
-    note:"2026년 8월 기준 화면입니다. 무료 플랜은 프로젝트 5개까지 만들 수 있고, 유료 플랜에서는 지식이 많아지면 자동으로 검색(RAG) 방식으로 전환됩니다."},
-  gpt:{name:"ChatGPT 맞춤형 GPT", tag:"ChatGPT의 GPT", badge:"⬡", color:"#10a37f", lim:8000,
-    need:"ChatGPT Plus · Team · Enterprise 플랜 (무료 플랜은 GPT 사용만 가능 · 제작은 웹에서만 지원)",
+    note:"무료 플랜은 프로젝트 5개까지 만들 수 있고, 유료 플랜에서는 프로젝트 지식이 많아지면 자동으로 검색(RAG) 방식으로 전환되어 더 많은 자료를 넣을 수 있습니다."},
+  gpt:{name:"ChatGPT 프로젝트", tag:"ChatGPT 프로젝트", badge:"⬡", color:"#10a37f", lim:8000,
+    nameLabel:"프로젝트 이름", descLabel:"설명 칸 없음 — 건너뛰기", noDesc:true,
+    src:"https://help.openai.com/en/articles/10169521-projects-in-chatgpt",
+    need:"ChatGPT 계정 — 무료 플랜 포함 모든 요금제에서 프로젝트 생성 가능 · 프로젝트당 파일: 무료 5개 · Go·Plus 25개 · Pro·Business·Edu 40개",
     steps:[
-      "웹 브라우저에서 ChatGPT(chatgpt.com)에 로그인합니다. (모바일 앱에서는 GPT를 사용할 수만 있고 제작은 안 됩니다)",
-      "왼쪽 사이드바에서 <b>‘GPT 탐색(Explore GPTs)’</b>을 열고, 오른쪽 위 <b>‘+ 만들기(Create)’</b>를 클릭합니다.",
-      "상단 <b>‘구성(Configure)’</b> 탭으로 이동합니다. (‘만들기’ 탭의 대화형 빌더 대신 직접 입력하는 것이 정확합니다)",
-      "<b>이름</b>과 <b>설명</b>을 입력하고, <b>‘지침(Instructions)’</b>에 생성된 프롬프트를 붙여넣습니다.",
-      "<b>‘지식(Knowledge)’</b>의 <b>‘파일 업로드’</b>로 참고 자료를 올립니다. (GPT당 최대 20개 · PDF·DOCX·TXT·CSV 등)",
-      "<b>‘기능(Capabilities)’</b>은 필요한 것만 켭니다. 생기부 작성에는 <chip>웹 검색</chip>·<chip>이미지 생성</chip>이 필요 없으므로 꺼 두는 편이 안정적입니다.",
-      "오른쪽 위 <b>‘만들기/업데이트’</b>를 누르고 공개 범위를 <chip>나만 보기</chip>로 선택해 저장합니다.",
-      "만든 GPT를 열어 학생 누가기록을 붙여넣어 사용합니다."
+      "ChatGPT(chatgpt.com)에 로그인합니다. (긴 프롬프트를 붙여넣기 편하도록 PC 웹 브라우저를 권장합니다)",
+      "왼쪽 사이드바에서 <b>‘새 프로젝트(New project)’</b>를 클릭합니다.",
+      "<b>프로젝트 이름</b>(예: <chip>송쌤과학 생기부</chip>)을 입력하고 아이콘·색을 고른 뒤 만듭니다. 메모리 설정을 고를 수 있으면 <chip>프로젝트 전용 메모리</chip>를 선택합니다.",
+      "프로젝트 이름 옆 <b>‘•••’(더보기)</b> → <b>‘프로젝트 설정(Project settings)’</b>을 열고 <b>‘지침(Instructions)’</b>에 생성된 프롬프트를 붙여넣은 뒤 저장합니다. (지침은 <b>약 8,000자</b>까지 — 넘으면 이 사이트의 <b>‘압축’</b> 모드로 다시 만드세요)",
+      "같은 설정 화면의 <b>‘메모리’</b>가 <chip>프로젝트 전용 메모리</chip>인지 확인합니다. 다른 대화의 기억이 섞이지 않아 학생 기록 작성에 안전합니다.",
+      "(선택) 프로젝트 화면의 <b>‘파일 추가’</b>로 성취기준·기재요령 등 참고 자료를 올립니다. (한 번에 10개까지 업로드)",
+      "프로젝트 안에서 <b>새 채팅</b>을 열고 학생 누가기록을 붙여넣어 사용합니다. 프로젝트 지침이 이 프로젝트의 모든 채팅에 자동 적용됩니다.",
+      "학생 정보가 담기므로 프로젝트 <b>‘공유’</b>는 하지 않습니다. (공유하면 초대된 사람이 채팅·파일·지침을 모두 볼 수 있습니다)"
     ],
-    note:"2026년 8월 기준 화면입니다. 공개 범위는 ‘나만 보기 / 링크가 있는 사람 / GPT 스토어’ 중 선택하며, 학생 정보가 포함될 수 있으므로 반드시 ‘나만 보기’로 두세요."},
-  copilot:{name:"Microsoft Copilot 에이전트", tag:"Copilot 에이전트", badge:"▲", color:"#8661c5",
-    need:"Microsoft 계정(개인용 에이전트 빌더) 또는 Microsoft 365 Copilot·Copilot Studio 라이선스 (조직 계정 정책에 따라 상이)",
+    note:"OpenAI는 맞춤형 GPT를 2026년 12월 11일 종료할 예정이며, 무료·Go·Plus·Pro 개인 계정은 이미 새 GPT를 만들 수 없습니다(기존 GPT는 종료일까지 사용 가능). 그래서 모든 요금제에서 쓸 수 있는 ‘프로젝트’로 안내합니다. 학생 정보를 다루므로 설정 › 데이터 제어의 ‘모두를 위한 모델 개선’은 끄는 것을 권장합니다."},
+  copilot:{name:"Microsoft Copilot 에이전트", tag:"Copilot 에이전트", badge:"▲", color:"#8661c5", lim:8000, nameMax:30,
+    nameLabel:"에이전트 이름 · 30자 이내", descLabel:"에이전트 설명 · 필수",
+    src:"https://support.microsoft.com/ko-kr/microsoft-365-copilot/build-your-own-agent-with-microsoft-365-copilot",
+    need:"학교(업무) 계정: Microsoft 365 Copilot의 에이전트 빌더(기관 관리자가 허용한 경우) · 개인 Microsoft 계정: Microsoft Copilot 앱의 에이전트 빌더",
     steps:[
-      "Microsoft Copilot(copilot.microsoft.com) 또는 Copilot 앱에 로그인합니다.",
-      "왼쪽 <b>탐색 창</b>에서 <b>‘에이전트(Agents)’</b>를 선택하고 <b>‘새 에이전트(New agent)’</b>를 클릭합니다.",
-      "에이전트 빌더가 열리면 만들고 싶은 내용을 한 줄로 설명해 보내거나, 템플릿을 골라 시작합니다.",
-      "<b>‘구성(Configure)’</b> 탭으로 이동해 <b>이름</b>·<b>설명</b>을 입력하고, <b>‘지침(Instructions)’</b>에 생성된 프롬프트를 붙여넣습니다.",
-      "<b>‘지식(Knowledge)’</b> 원본으로 성취기준·기재요령 등 참고 자료를 추가합니다.",
-      "<b>‘만들기(Create)’</b>를 눌러 저장한 뒤, 대화창에 학생 누가기록을 붙여넣어 사용합니다.",
-      "학교(조직) 계정에서 더 정교하게 만들려면 <b>Copilot Studio</b>(copilotstudio.microsoft.com)에서 에이전트를 만들고 <b>‘게시’</b>합니다."
+      "학교(업무) 계정은 <chip>microsoft365.com/chat</chip>(또는 Teams의 Copilot)에, 개인 Microsoft 계정은 <b>Microsoft Copilot 앱</b>에 로그인합니다. (에이전트 제작은 PC 웹·데스크톱에서만 됩니다)",
+      "왼쪽 탐색 창의 <b>‘에이전트(Agents)’</b> 아래 <b>‘새 에이전트(New agent)’</b>를 클릭합니다.",
+      "대화로 설명하는 대신 <b>‘구성으로 건너뛰기(Skip to configure)’</b>를 눌러 <b>‘구성(Configure)’</b> 탭을 엽니다. (이 버튼이 없으면 아무 템플릿이나 고른 뒤 <b>‘구성’</b>을 누르고 내용을 바꿔 씁니다)",
+      "<b>이름</b>(30자 이내)과 <b>설명</b>을 입력하고, <b>‘지침(Instructions)’</b>에 생성된 프롬프트를 붙여넣습니다. (지침은 <b>8,000자</b>까지 — 넘으면 이 사이트의 <b>‘압축’</b> 모드로 다시 만드세요)",
+      "<b>‘지식(Knowledge)’</b>에 성취기준·기재요령 파일이나 웹 주소를 추가합니다. (추가할 수 있는 지식 종류는 계정·라이선스에 따라 다릅니다)",
+      "<b>‘사용해 보기(Try it)’</b> 탭에서 짧은 누가기록으로 응답을 확인합니다. (이름·설명·지침이 모두 있어야 열립니다)",
+      "<b>‘만들기(Create)’</b>를 눌러 저장합니다. 따로 공유하지 않으면 나만 사용하며, 에이전트 목록에서 골라 학생 누가기록을 붙여넣어 사용합니다.",
+      "외부 서비스 연동 등 더 복잡한 기능이 필요하면 <b>Copilot Studio</b>(copilotstudio.microsoft.com)를 사용합니다. (별도 라이선스가 필요할 수 있습니다)"
     ],
-    note:"2026년 8월 기준 화면입니다. 학교(조직) 계정 정책에 따라 에이전트 제작 가능 여부와 메뉴 구성이 달라지며, Copilot Studio는 별도 라이선스(용량 팩)가 필요할 수 있습니다."},
+    note:"에이전트 빌더의 입력 한도는 이름 30자 · 설명 1,000자 · 지침 8,000자입니다. 학교(조직) 계정은 관리자가 에이전트 만들기를 꺼 두었을 수 있으며, 메뉴 이름은 업데이트에 따라 달라질 수 있습니다."},
   sengpt:{name:"senGPT 나만의 에이전트 (서울시교육청 웍스AI)", tag:"senGPT", badge:"★", color:"#FF6F91",
-    need:"서울시교육청 SEN 계정 — @sen.go.kr 이메일 인증 (웍스AI 기반 서비스)",
+    nameLabel:"에이전트명", descLabel:"설명 칸 없음 — 건너뛰기", noDesc:true,
+    src:"https://docs.wrks.ai/user-guide/personal-assistants",
+    need:"서울시교육청 교직원 — @sen.go.kr 이메일로 가입 · 접속 주소 gov.wrks.ai (일반 웍스AI wrks.ai와 다름)",
     steps:[
-      "senGPT(서울시교육청 웍스AI)에 접속해 <b>‘이메일로 로그인’</b>으로 <chip>@sen.go.kr</chip> SEN 이메일 인증 후 로그인합니다. (계정이 휴면 상태면 SEN 웹메일에서 휴면 해제 먼저)",
+      "<chip>gov.wrks.ai</chip>(서울시교육청 웍스AI)에 접속해 <b>‘공공기관 로그인’ → ‘이메일로 시작하기’</b>를 누르고, <chip>@sen.go.kr</chip> 이메일로 가입·인증한 뒤 로그인합니다. (인증 메일이 안 오면 SEN 웹메일에서 휴면 해제부터)",
       "<b>‘AI 대화’</b> 탭 하단의 ‘에이전트를 골라 일을 맡겨주세요.’ 영역에서 <b>‘나만의 에이전트’ 탭 → ‘에이전트 만들기’</b> 카드를 클릭합니다.",
-      "팝업 상단의 <b>‘모델 선택’</b> 드롭다운에서 사용할 AI 모델을 고릅니다.",
+      "팝업 상단의 <b>‘모델 선택’</b>에서 사용할 AI 모델을 고릅니다. 오른쪽에 <b>‘생각의 깊이’</b> 메뉴가 보이면 기본값이나 <chip>꼼꼼하게</chip>를 권장합니다. (‘최대로 생각’은 응답이 느리고 사용량이 크게 늘어납니다)",
       "<b>‘에이전트명’</b>에 이름(예: <chip>송쌤과학 생기부 도우미</chip>)을 입력합니다. 에이전트명은 만든 사람에게만 보입니다.",
       "<b>‘프롬프트’</b> 입력란에 생성된 만능 프롬프트를 <b>그대로 붙여넣습니다.</b> (우측 요술봉(✨)은 한두 줄 설명을 프롬프트로 늘려 주는 기능이므로, 이미 완성된 이 프롬프트에는 사용하지 않는 것을 권장)",
       "(선택) <b>‘파일 업로드’</b>로 성취기준·기재요령 등 참고 자료를 첨부합니다. (파일당 최대 100MB · PDF·DOCX·DOC·PPTX·HWP·HWPX 지원 — 꼭 필요한 핵심 자료만 올려야 응답 성능이 좋습니다)",
       "<b>‘도구 연결’</b>(최대 5개)은 생기부 작성에는 필요하지 않으므로 선택하지 않고 넘어갑니다.",
       "<b>‘만들기’</b>를 클릭하면 ‘나만의 에이전트’ 목록에 카드가 생깁니다. 카드를 클릭해 학생 누가기록을 붙여넣어 사용하고, 카드에 마우스를 올리면 연필(수정)·휴지통(삭제) 아이콘이 나타납니다."
     ],
-    note:"웍스AI v2.0부터 기존 ‘나만의 비서’가 ‘나만의 에이전트’로 바뀌었습니다(2026년 8월 기준). senGPT는 서울시교육청(SEN)이 웍스AI(wrks.ai)와 협력해 제공하는 서비스입니다. 주민등록번호 등 개인정보는 입력 금지 — 누가기록의 학생 이름도 익명 기호(예: 3반 A학생)로 바꿔 입력하는 것을 권장합니다."},
+    note:"senGPT는 일반 웍스AI(wrks.ai)와 접속 주소가 달라 gov.wrks.ai에서 가입해야 합니다(‘회원정보를 찾을 수 없다’가 뜨면 주소를 확인하세요). 웍스AI v2.0부터 ‘나만의 비서’가 ‘나만의 에이전트’로 바뀌었습니다. 주민등록번호 등 개인정보는 입력 금지 — 누가기록의 학생 이름도 익명 기호(예: 3반 A학생)로 바꿔 입력하는 것을 권장합니다."},
 };
 
 /* ---- 출력 옵션 헬퍼 ---- */
@@ -2371,10 +2390,18 @@ function agentTag(){
 function buildAgentMeta(){
   const lv=state.level, teacher=document.getElementById("teacher").value.trim();
   const chosen=chosenCats().map(c=>CAT_SHORT[c]);
-  const title=(teacher?teacher+"의 ":"")+"생기부 AI ("+agentTag()+")";
+  const p=PLATFORMS[state.platform];
+  let title=(teacher?teacher+"의 ":"")+"생기부 AI ("+agentTag()+")";
+  if(p.nameMax && [...title].length>p.nameMax){          // 이름 한도가 있으면 성함부터 빼고, 그래도 길면 자른다
+    title="생기부 AI ("+agentTag()+")";
+    if([...title].length>p.nameMax) title=[...title].slice(0,p.nameMax-2).join("")+"…)";
+  }
   const desc=lv+" "+gradeText()+" "+chosen.join("·")+" 특기사항 초안을 2026 학교생활기록부 기재요령에 맞춰 작성하는 AI 도우미입니다. 학생 누가기록을 붙여넣으면 항목별 초안을 생성합니다. 결과물은 초안이므로 교사가 사실 확인·수정 후 입력합니다.";
   document.getElementById("agentTitle").value=title;
   document.getElementById("agentDesc").value=desc;
+  document.getElementById("agentTitleHint").textContent=p.nameLabel;
+  document.getElementById("agentDescHint").textContent=p.descLabel;
+  document.getElementById("agentDescRow").classList.toggle("skip", !!p.noDesc);
 }
 
 /* ---- 누가기록 입력 양식 ---- */
@@ -2476,9 +2503,13 @@ function renderManual(){
   document.getElementById("manTitle").innerHTML = "📖 "+p.name+" 제작 매뉴얼";
   const steps = p.steps.map(s=>"<li>"+s.replace(/<chip>/g,'<span class="chip">').replace(/<\/chip>/g,'</span>')+"</li>").join("");
   const botName = "생기부 AI("+agentTag()+")";
+  const limLine = p.lim ? '<p class="mneed" style="background:#fff8ee;border-color:#f2ddba;color:#89560d;">⚠ '+p.name+'의 지침 입력칸은 <b style="color:#b86a12;">약 '+p.lim.toLocaleString()+'자</b>까지입니다. 현재 프롬프트는 '+[...currentPrompt].length.toLocaleString()+'자 — 넘으면 출력 옵션의 <b style="color:#b86a12;">‘압축’</b> 모드로 다시 만들거나 작성 항목을 나눠 두 개로 만드세요.</p>' : '';
   document.getElementById("manualBody").innerHTML =
     '<p class="mneed" style="background:#eaf4fc;border-color:#cfe4f5;color:var(--blue-deep);">🤖 이 매뉴얼대로 만들면, 위 프롬프트가 상시 적용되어 <b>누가기록만 붙여넣으면 세특 초안을 만들어 주는 나만의 생기부 AI</b>가 완성됩니다. 위 <b>‘에이전트 설정 문구’</b>의 ①제목 ②설명 ③지침을 각 입력칸에 순서대로 붙여넣으세요. 추천 이름: <b>'+escapeHtml(botName)+'</b></p>'
-    + '<p class="mneed">필요 조건 · <b>'+p.need+'</b></p><ol class="steps">'+steps+'</ol><p class="mnote">※ '+p.note+' · 지침에는 생성된 프롬프트를, 지식/파일에는 생활기록부 참고 자료를 넣는 흐름은 모든 플랫폼이 동일합니다. <b>사용하려는 AI의 에이전트·Gem·프로젝트 등의 ‘지식’에 교과 성취기준이 요약된 자료를 넣거나 원본 파일(성취기준·기재요령)을 첨부하면 초안이 더 정확해집니다.</b> 원본 자료는 페이지 상단 <b>‘공식 자료실’</b> 버튼에서 내려받을 수 있습니다. 완성된 생기부 AI의 답변 역시 초안이므로 교사 검토 후 입력하세요.</p>';
+    + limLine
+    + '<p class="mneed">필요 조건 · <b>'+p.need+'</b></p><ol class="steps">'+steps+'</ol>'
+    + '<p class="msrc">'+PLAT_CHECKED+' 공식 도움말 기준으로 확인한 화면입니다. 메뉴가 다르게 보이면 <a href="'+p.src+'" target="_blank" rel="noopener">공식 안내 보기 ↗</a></p>'
+    + '<p class="mnote">※ '+p.note+' · 지침에는 생성된 프롬프트를, 지식/파일에는 생활기록부 참고 자료를 넣는 흐름은 모든 플랫폼이 동일합니다. <b>사용하려는 AI의 에이전트·Gem·프로젝트 등의 ‘지식’에 교과 성취기준이 요약된 자료를 넣거나 원본 파일(성취기준·기재요령)을 첨부하면 초안이 더 정확해집니다.</b> 원본 자료는 페이지 상단 <b>‘공식 자료실’</b> 버튼에서 내려받을 수 있습니다. 완성된 생기부 AI의 답변 역시 초안이므로 교사 검토 후 입력하세요.</p>';
 }
 
 /* ---- 생성 ---- */
@@ -2632,7 +2663,7 @@ function buildPdfDoc(){
     + (sci?row("과학 과목", esc(sci.name)+" ("+esc(sci.cat)+" · "+esc(sci.gr)+")"+(nStd?("　·　연계 성취기준 "+nStd+"개"):"")):"")
     + (subj?row("타교과 과목", esc(subj)+(sub2?("　·　"+esc(state.subjKey)+" "+esc(sub2.name)+(nStd2?("(성취기준 "+nStd2+"개)"):"")):"")):"")
     + (club?row("동아리", esc(club)):"")
-    + row("사용 플랫폼", esc(p.name))
+    + row("사용 플랫폼", esc(p.name)+(p.lim?("　·　지침 한도 약 "+p.lim.toLocaleString()+"자 (현재 "+[...currentPrompt].length.toLocaleString()+"자)"):""))
     + row("출력 옵션", esc(optTxt))
   + '</table>'
   + '<div style="margin-top:26px;">'
@@ -2641,9 +2672,15 @@ function buildPdfDoc(){
   + '</div>'
   + '<div style="margin-top:26px;">'
     + '<div style="font-size:13px;font-weight:800;color:#0A4E85;border-left:4px solid #FFB7B2;padding-left:10px;margin-bottom:6px;">2. '+esc(p.name)+' 제작 매뉴얼</div>'
-    + '<div style="font-size:11.5px;color:#5b6b7c;background:#FFE9E7;border-radius:8px;padding:9px 12px;margin:10px 0 14px;">필요 조건 · <b style="color:#F58C86;">'+esc(p.need)+'</b></div>'
+    + '<div style="font-size:11.5px;color:#5b6b7c;background:#FFE9E7;border-radius:8px;padding:9px 12px;margin:10px 0 10px;">필요 조건 · <b style="color:#F58C86;">'+esc(p.need)+'</b></div>'
+    + '<table style="width:100%;border-collapse:collapse;margin:0 0 14px;font-size:11.5px;">'
+      + row("① "+esc(p.nameLabel), esc(document.getElementById("agentTitle").value))
+      + row("② 설명", p.noDesc ? '<span style="color:#8a99a8;">이 플랫폼은 설명 칸이 없어 건너뜁니다</span>' : esc(document.getElementById("agentDesc").value))
+      + row("③ 지침", "위 1번 ‘생성된 만능 프롬프트’ 전체를 붙여넣기")
+    + '</table>'
     + stepsHtml
-    + '<div style="font-size:11px;color:#8a99a8;margin-top:12px;padding-top:10px;border-top:1px dashed #e6edf4;">※ '+esc(p.note)+'</div>'
+    + '<div style="font-size:11px;color:#8a99a8;margin-top:12px;padding-top:10px;border-top:1px dashed #e6edf4;line-height:1.6;">※ '+esc(p.note)
+      + '<br>※ '+PLAT_CHECKED+' 공식 도움말 기준으로 확인한 화면입니다. 메뉴가 다르게 보이면 공식 안내를 확인하세요: '+esc(p.src)+'</div>'
   + '</div>'
   + '<div style="margin-top:26px;">'
     + '<div style="font-size:13px;font-weight:800;color:#0A4E85;border-left:4px solid #FFB7B2;padding-left:10px;margin-bottom:12px;">3. 누가기록 입력 양식 (생기부 AI에 채워 붙여넣기)</div>'
@@ -3601,7 +3638,8 @@ function init(){
   const platsEl=document.getElementById("plats");
   Object.entries(PLATFORMS).forEach(([key,p])=>{
     const d=document.createElement("div"); d.className="plat"+(key===state.platform?" on":""); d.dataset.key=key;
-    d.innerHTML='<span class="badge" style="background:'+p.color+'">'+p.badge+'</span><span class="pt"><b>'+p.tag+'</b><small>'+p.name+'</small></span>';
+    d.innerHTML='<span class="badge" style="background:'+p.color+'">'+p.badge+'</span><span class="pt"><b>'+p.tag+'</b><small>'+p.name+'</small>'
+      + (p.lim ? '<small class="plim">지침 '+p.lim.toLocaleString()+'자 제한 · 압축 모드 권장</small>' : '')+'</span>';
     d.addEventListener("click",()=>{
       document.querySelectorAll("#plats .plat").forEach(x=>x.classList.remove("on"));
       d.classList.add("on"); state.platform=key; saveState();
